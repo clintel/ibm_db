@@ -54,7 +54,7 @@ typedef struct _stmt_bind_data_array {
 }stmt_bind_array;
 
 /*
-  Structure to hold the data necessary for the connect helper function. Contains details like 
+  Structure to hold the data necessary for the connect helper function. Contains details like
   is persistent, the credentials and the connection options required
 */
 typedef struct _ibm_db_connect_helper_args_struct {
@@ -350,9 +350,9 @@ static void ruby_ibm_db_check_sqlcreatedb(void *cliLib) {
 	 }
 }
 /*Check if specific functions are supported or not based on CLI being used
- * For Eg: SQLCreateDB and SQLDropDB is supported only from V97fp3 onwards. In this function we open the CLI library 
- * using DLOpen and check if the function is defined. If yes then we allow the user to use the function, 
- * else throw a warning saying this is not supported 
+ * For Eg: SQLCreateDB and SQLDropDB is supported only from V97fp3 onwards. In this function we open the CLI library
+ * using DLOpen and check if the function is defined. If yes then we allow the user to use the function,
+ * else throw a warning saying this is not supported
  */
 static void ruby_ibm_db_check_if_cli_func_supported() {
 #ifdef _WIN32
@@ -423,7 +423,7 @@ char *estrndup(char *data, int max) {
 void strtolower(char *data, int max) {
 #ifdef UNICODE_SUPPORT_VERSION
   rb_encoding *enc;
-    
+
   if ( arch_is_bigendian() ){
     enc = rb_enc_find("UTF-16BE");
   } else {
@@ -915,12 +915,12 @@ static void _ruby_ibm_db_init_error_info(stmt_handle *stmt_res)
 }
 /*  */
 
-/*  static void _ruby_ibm_db_check_sql_errors( void *conn_or_stmt, int resourceType, SQLSMALLINT hType, int rc, 
+/*  static void _ruby_ibm_db_check_sql_errors( void *conn_or_stmt, int resourceType, SQLSMALLINT hType, int rc,
                                                int cpy_to_global, SQLPOINTER ret_str, SQLSMALLINT *ret_str_len , int API,
                                                SQLSMALLINT recno, int release_gil )
 */
 static void _ruby_ibm_db_check_sql_errors( void *conn_or_stmt, int resourceType, SQLHANDLE handle, SQLSMALLINT hType,
-                                           int rc, int cpy_to_global,  SQLPOINTER ret_str, SQLSMALLINT *ret_str_len, 
+                                           int rc, int cpy_to_global,  SQLPOINTER ret_str, SQLSMALLINT *ret_str_len,
                                            int API, SQLSMALLINT recno, int release_gil )
 {
   SQLPOINTER        msg                =  NULL;
@@ -988,7 +988,7 @@ static void _ruby_ibm_db_check_sql_errors( void *conn_or_stmt, int resourceType,
   if( release_gil == 1 ){
 
     #ifdef UNICODE_SUPPORT_VERSION
-      return_code  =  rb_thread_blocking_region( (void *)_ruby_ibm_db_SQLGetDiagRec_helper, get_DiagRec_args,
+      return_code  =  rb_thread_call_without_gvl( (void *)_ruby_ibm_db_SQLGetDiagRec_helper, get_DiagRec_args,
                                 (void *)_ruby_ibm_db_Connection_level_UBF, NULL);
     #else
       return_code  =  _ruby_ibm_db_SQLGetDiagRec_helper( get_DiagRec_args );
@@ -1045,7 +1045,7 @@ static void _ruby_ibm_db_check_sql_errors( void *conn_or_stmt, int resourceType,
             case SQL_HANDLE_ENV:
             case SQL_HANDLE_DBC:
               /*
-                This copying into global should be removed once the deprecated methods 
+                This copying into global should be removed once the deprecated methods
                 conn_errormsg and conn_error are removed
               */
 #ifdef UNICODE_SUPPORT_VERSION
@@ -1177,12 +1177,12 @@ static void _ruby_ibm_db_check_sql_errors( void *conn_or_stmt, int resourceType,
 #endif
                   stmt_res->ruby_stmt_err_msg_len  =  length;
                   stmt_res->sqlcode                =  sqlcode;
-                  break; 
+                  break;
 
               }  /*End of switch( resourceType )*/
 
               /*
-                This copying into global should be removed once the deprecated methods 
+                This copying into global should be removed once the deprecated methods
                 conn_errormsg and conn_error are removed
               */
 #ifdef UNICODE_SUPPORT_VERSION
@@ -1260,7 +1260,7 @@ static void _ruby_ibm_db_check_sql_errors( void *conn_or_stmt, int resourceType,
 }
 /*  */
 
-/*  
+/*
    static void _ruby_ibm_db_assign_options( void *handle, int type, long opt_key, VALUE data, VALUE *error )
 */
 static VALUE _ruby_ibm_db_assign_options( void *handle, int type, long opt_key, VALUE data, VALUE *error )
@@ -1351,15 +1351,15 @@ static VALUE _ruby_ibm_db_assign_options( void *handle, int type, long opt_key, 
       rc  =  _ruby_ibm_db_SQLSetStmtAttr_helper( handleAttr_args );
 
       if ( rc == SQL_ERROR ) {
-        _ruby_ibm_db_check_sql_errors( handle, DB_STMT, (SQLHSTMT)((stmt_handle *)handle)->hstmt, 
+        _ruby_ibm_db_check_sql_errors( handle, DB_STMT, (SQLHSTMT)((stmt_handle *)handle)->hstmt,
                   SQL_HANDLE_STMT, rc, 1, NULL, NULL, -1, 1, 0 );
         ruby_xfree( handleAttr_args );
         handleAttr_args = NULL;
         if( handle != NULL && ((stmt_handle *)handle)->ruby_stmt_err_msg != NULL ) {
 #ifdef UNICODE_SUPPORT_VERSION
-          *error = rb_str_concat( _ruby_ibm_db_export_char_to_utf8_rstr("Setting of statement attribute failed: "), 
-                     _ruby_ibm_db_export_sqlwchar_to_utf8_rstr(((stmt_handle *)handle)->ruby_stmt_err_msg, 
-                               ((stmt_handle *)handle)->ruby_stmt_err_msg_len) 
+          *error = rb_str_concat( _ruby_ibm_db_export_char_to_utf8_rstr("Setting of statement attribute failed: "),
+                     _ruby_ibm_db_export_sqlwchar_to_utf8_rstr(((stmt_handle *)handle)->ruby_stmt_err_msg,
+                               ((stmt_handle *)handle)->ruby_stmt_err_msg_len)
                    );
 #else
           *error = rb_str_cat2(rb_str_new2("Setting of statement attribute failed: "), ((stmt_handle *)handle)->ruby_stmt_err_msg);
@@ -1393,7 +1393,7 @@ static VALUE _ruby_ibm_db_assign_options( void *handle, int type, long opt_key, 
       rc = _ruby_ibm_db_SQLSetStmtAttr_helper( handleAttr_args );
 
       if ( rc == SQL_ERROR ) {
-        _ruby_ibm_db_check_sql_errors( handle, DB_STMT, (SQLHSTMT)((stmt_handle *)handle)->hstmt, 
+        _ruby_ibm_db_check_sql_errors( handle, DB_STMT, (SQLHSTMT)((stmt_handle *)handle)->hstmt,
                   SQL_HANDLE_STMT, rc, 1, NULL, NULL, -1, 1, 0 );
         ruby_xfree( handleAttr_args );
         handleAttr_args = NULL;
@@ -1443,7 +1443,7 @@ static VALUE _ruby_ibm_db_assign_options( void *handle, int type, long opt_key, 
       rc = _ruby_ibm_db_SQLSetConnectAttr_helper( handleAttr_args );
 
       if ( rc == SQL_ERROR ) {
-        _ruby_ibm_db_check_sql_errors( handle, DB_CONN, (SQLHDBC)((conn_handle *)handle)->hdbc, 
+        _ruby_ibm_db_check_sql_errors( handle, DB_CONN, (SQLHDBC)((conn_handle *)handle)->hdbc,
                   SQL_HANDLE_DBC, rc, 1, NULL, NULL, -1, 1, 0 );
         ruby_xfree( handleAttr_args );
         handleAttr_args = NULL;
@@ -1476,7 +1476,7 @@ static VALUE _ruby_ibm_db_assign_options( void *handle, int type, long opt_key, 
       rc =  _ruby_ibm_db_SQLSetConnectAttr_helper( handleAttr_args );
 
       if ( rc == SQL_ERROR ) {
-        _ruby_ibm_db_check_sql_errors( handle, DB_CONN, (SQLHDBC)((conn_handle *)handle)->hdbc, 
+        _ruby_ibm_db_check_sql_errors( handle, DB_CONN, (SQLHDBC)((conn_handle *)handle)->hdbc,
                   SQL_HANDLE_DBC, rc, 1, NULL, NULL, -1, 1, 0);
         ruby_xfree( handleAttr_args );
         handleAttr_args = NULL;
@@ -1564,7 +1564,7 @@ static int _ruby_ibm_db_parse_options ( VALUE options, int type, void *handle, V
 }
 /*  */
 
-/* 
+/*
     static int _ruby_ibm_db_get_result_set_info(stmt_handle *stmt_res)
     initialize the result set information of each column. This must be done once
 */
@@ -1624,7 +1624,7 @@ static int _ruby_ibm_db_get_result_set_info(stmt_handle *stmt_res)
     rc = _ruby_ibm_db_SQLDescribeCol_helper( describecolargs );
 
     if ( rc == SQL_ERROR ) {
-      _ruby_ibm_db_check_sql_errors( stmt_res, DB_STMT, (SQLHSTMT)stmt_res->hstmt, SQL_HANDLE_STMT, 
+      _ruby_ibm_db_check_sql_errors( stmt_res, DB_STMT, (SQLHSTMT)stmt_res->hstmt, SQL_HANDLE_STMT,
                   rc, 1, NULL, NULL, -1, 1, 0 );
       ruby_xfree( result_cols_args );
       ruby_xfree( describecolargs );
@@ -1736,18 +1736,18 @@ static int _ruby_ibm_db_bind_column_helper(stmt_handle *stmt_res)
         bindCol_args->buff_length     =  stmt_res->column_info[i].size+1;
         if( column_type == SQL_GRAPHIC || column_type == SQL_VARGRAPHIC ){
           /* Graphic string is 2 byte character string.
-           * Size multiply by 2 is required only for non-unicode support version because the W equivalent functions return 
-           * SQLType as wchar or wvarchar, respectively. Hence is handled properly.        
+           * Size multiply by 2 is required only for non-unicode support version because the W equivalent functions return
+           * SQLType as wchar or wvarchar, respectively. Hence is handled properly.
            */
           bindCol_args->buff_length     =  bindCol_args->buff_length * 2;
         }
-		
+
         if( column_type == SQL_CHAR || column_type == SQL_VARCHAR ) {
           /* Multiply the size by 4 to handle cases where client and server code pages are different.
            * 4 bytes should be able to cover any codeset character known*/
           bindCol_args->buff_length     =  bindCol_args->buff_length * 4;
         }
-		
+
         row_data->str_val             =  ALLOC_N(char, bindCol_args->buff_length);
 #endif
         bindCol_args->TargetValuePtr  =  row_data->str_val;
@@ -2264,11 +2264,11 @@ static VALUE _ruby_ibm_db_connect_helper2( connect_helper_args *data ) {
 
 #ifdef CLI_DBC_SERVER_TYPE_DB2LUW
 #ifdef SQL_ATTR_DECFLOAT_ROUNDING_MODE
-                                                                                         
+
         /**
                     * Code for setting SQL_ATTR_DECFLOAT_ROUNDING_MODE
                     * for implementation of Decfloat Datatype
-                    * */  
+                    * */
        _ruby_ibm_db_set_decfloat_rounding_mode_client( handleAttr_args, conn_res );
 
 #endif
@@ -2327,8 +2327,8 @@ static VALUE _ruby_ibm_db_connect_helper2( connect_helper_args *data ) {
     /* Set SQL_ATTR_REPLACE_QUOTED_LITERALS connection attribute to
      * enable CLI numeric literal feature. This is equivalent to
      * PATCH2=71 in the db2cli.ini file
-     * Note, for backward compatibility with older CLI drivers having a 
-     * different value for SQL_ATTR_REPLACE_QUOTED_LITERALS, we call 
+     * Note, for backward compatibility with older CLI drivers having a
+     * different value for SQL_ATTR_REPLACE_QUOTED_LITERALS, we call
      * SQLSetConnectAttr() with both the old and new value
      */
 #ifndef PASE
@@ -2478,7 +2478,7 @@ static VALUE _ruby_ibm_db_connect_helper( int argc, VALUE *argv, int isPersisten
   helper_args->options                =  &options;
   helper_args->error                  =  &error;
 
-  if( isPersistent ) { 
+  if( isPersistent ) {
   /*If making a persistent connection calculate the hash key to cache the connection in persistence list*/
 #ifndef UNICODE_SUPPORT_VERSION
     helper_args->hKey = rb_str_concat(rb_str_dup(r_uid), r_db); /*A duplicate of r_uid is made so that initial value is intact*/
@@ -2501,7 +2501,7 @@ static VALUE _ruby_ibm_db_connect_helper( int argc, VALUE *argv, int isPersisten
 
   /* Call the function where the actual logic is being run*/
   #ifdef UNICODE_SUPPORT_VERSION
-    return_value = rb_thread_blocking_region( (void *)_ruby_ibm_db_connect_helper2, helper_args,
+    return_value = rb_thread_call_without_gvl( (void *)_ruby_ibm_db_connect_helper2, helper_args,
                              (void *)_ruby_ibm_db_Connection_level_UBF, NULL);
   #else
     return_value = _ruby_ibm_db_connect_helper2( helper_args );
@@ -2642,7 +2642,7 @@ static int _ruby_ibm_db_set_decfloat_rounding_mode_client_helper(_rounding_mode 
 #ifdef SQL_ATTR_DECFLOAT_ROUNDING_MODE
 /**
  * Function for implementation of DECFLOAT Datatype
- * 
+ *
  * Description :
  * This function retrieves the value of special register decflt_rounding
  * from the database server which signifies the current rounding mode set
@@ -2657,7 +2657,7 @@ static int _ruby_ibm_db_set_decfloat_rounding_mode_client( set_handle_attr_args 
     _rounding_mode *rnd_mode;
 
     SQLHANDLE hdbc = *(data->handle);
-    
+
     rnd_mode =  ALLOC( _rounding_mode );
     memset(rnd_mode,'\0',sizeof(struct _rounding_mode_struct));
 
@@ -2730,36 +2730,36 @@ static void _ruby_ibm_db_clear_conn_err_cache()
  *    DRIVER={IBM DB2 ODBC DRIVER};DATABASE=database;HOSTNAME=hostname;PORT=port;PROTOCOL=TCPIP;UID=username;PWD=password;
  *    where the parameters represent the following values:
  *       hostname
- *          The hostname or IP address of the database server. 
+ *          The hostname or IP address of the database server.
  *       port
- *          The TCP/IP port on which the database is listening for requests. 
+ *          The TCP/IP port on which the database is listening for requests.
  *       username
- *          The username with which you are connecting to the database. 
+ *          The username with which you are connecting to the database.
  *       password
- *          The password with which you are connecting to the database. 
+ *          The password with which you are connecting to the database.
  *
  * ====<em>username</em>
  *    The username with which you are connecting to the database.
- *    For uncataloged connections, you must pass a NULL value or empty string. 
+ *    For uncataloged connections, you must pass a NULL value or empty string.
  * ====<em>password</em>
  *    The password with which you are connecting to the database.
- *    For uncataloged connections, you must pass a NULL value or empty string. 
+ *    For uncataloged connections, you must pass a NULL value or empty string.
  * ====<em>options</em>
  *    An associative array of connection options that affect the behavior of the connection,
  *    where valid array keys include:
  *       SQL_ATTR_AUTOCOMMIT
  *          Passing the SQL_AUTOCOMMIT_ON value turns autocommit on for this connection handle.
- *          Passing the SQL_AUTOCOMMIT_OFF value turns autocommit off for this connection handle. 
+ *          Passing the SQL_AUTOCOMMIT_OFF value turns autocommit off for this connection handle.
  *       ATTR_CASE
  *          Passing the CASE_NATURAL value specifies that column names are returned in natural case.
  *          Passing the CASE_LOWER value specifies that column names are returned in lower case.
- *          Passing the CASE_UPPER value specifies that column names are returned in upper case. 
+ *          Passing the CASE_UPPER value specifies that column names are returned in upper case.
  *       CURSOR
  *          Passing the SQL_SCROLL_FORWARD_ONLY value specifies a forward-only cursor for a statement resource.
  *          This is the default cursor type and is supported on all database servers.
  *          Passing the SQL_CURSOR_KEYSET_DRIVEN value specifies a scrollable cursor for a statement resource.
  *          This mode enables random access to rows in a result set, but currently is supported
- *          only by IBM DB2 Universal Database. 
+ *          only by IBM DB2 Universal Database.
  * ====<em>set_replace_quoted_literal</em>
  *    This variable indicates if the CLI Connection attribute SQL_ATTR_REPLACE_QUOTED_LITERAL is to be set or not
  *    To turn it ON pass  IBM_DB::QUOTED_LITERAL_REPLACEMENT_ON
@@ -2769,8 +2769,8 @@ static void _ruby_ibm_db_clear_conn_err_cache()
  *
  * ==Return Values
  * Returns a connection handle resource if the connection attempt is successful.
- * If the connection attempt fails an exception is thrown with the connection error message. 
- * 
+ * If the connection attempt fails an exception is thrown with the connection error message.
+ *
  */
 VALUE ibm_db_connect(int argc, VALUE *argv, VALUE self)
 {
@@ -2782,58 +2782,58 @@ VALUE ibm_db_connect(int argc, VALUE *argv, VALUE self)
 
 /*
  * IBM_DB.pconnect --  Returns a persistent connection to a database
- * 
+ *
  * ===Description
  * resource IBM_DB.pconnect ( string database, string username, string password [, array options, int set_replace_quoted_literal] )
- * 
+ *
  * Returns a persistent connection to an IBM DB2 Universal Database, IBM Cloudscape,
  * or Apache Derby database.
- * 
+ *
  * Calling IBM_DB.close() on a persistent connection always returns TRUE, but the underlying DB2 client
  * connection remains open and waiting to serve the next matching IBM_DB.pconnect() request.
- * 
+ *
  * ===Parameters
- * 
+ *
  * database
- *     The database alias in the DB2 client catalog. 
- * 
+ *     The database alias in the DB2 client catalog.
+ *
  * username
- *     The username with which you are connecting to the database. 
- * 
+ *     The username with which you are connecting to the database.
+ *
  * password
- *     The password with which you are connecting to the database. 
- * 
+ *     The password with which you are connecting to the database.
+ *
  * options
  *     An associative array of connection options that affect the behavior of the connection,
  *     where valid array keys include:
- * 
+ *
  *     autocommit
  *         Passing the DB2_AUTOCOMMIT_ON value turns autocommit on for this connection handle.
- *         Passing the DB2_AUTOCOMMIT_OFF value turns autocommit off for this connection handle. 
- * 
+ *         Passing the DB2_AUTOCOMMIT_OFF value turns autocommit off for this connection handle.
+ *
  *     DB2_ATTR_CASE
  *         Passing the DB2_CASE_NATURAL value specifies that column names are returned in natural case.
  *         Passing the DB2_CASE_LOWER value specifies that column names are returned in lower case.
- *         Passing the DB2_CASE_UPPER value specifies that column names are returned in upper case. 
- * 
+ *         Passing the DB2_CASE_UPPER value specifies that column names are returned in upper case.
+ *
  *     CURSOR
  *         Passing the SQL_SCROLL_FORWARD_ONLY value specifies a forward-only cursor for a statement resource.
  *         This is the default cursor type and is supported on all database servers.
  *         Passing the SQL_CURSOR_KEYSET_DRIVEN value specifies a scrollable cursor for a statement resource.
  *         This mode enables random access to rows in a result set, but currently is supported only
- *         by IBM DB2 Universal Database. 
+ *         by IBM DB2 Universal Database.
  * ====<em>set_replace_quoted_literal</em>
  *    This variable indicates if the CLI Connection attribute SQL_ATTR_REPLACE_QUOTED_LITERAL is to be set or not
  *    To turn it ON pass  IBM_DB::SET_QUOTED_LITERAL_REPLACEMENT_ON
  *    To turn it OFF pass IBM_DB::SET_QUOTED_LITERAL_REPLACEMENT_OFF
  *
  *    Default Setting: - IBM_DB::SET_QUOTED_LITERAL_REPLACEMENT_ON
- * 
+ *
  * ===Return Values
- * 
+ *
  * Returns a connection handle resource if the connection attempt is successful. IBM_DB.pconnect()
  * tries to reuse an existing connection resource that exactly matches the database, username,
- * and password parameters. If the connection attempt fails, an exception is thrown with the connection error message. 
+ * and password parameters. If the connection attempt fails, an exception is thrown with the connection error message.
  */
 VALUE ibm_db_pconnect(int argc, VALUE *argv, VALUE self)
 {
@@ -2845,7 +2845,7 @@ VALUE ibm_db_pconnect(int argc, VALUE *argv, VALUE self)
  * CreateDB helper
  */
 VALUE ruby_ibm_db_createDb_helper(VALUE connection, VALUE dbName, VALUE codeSet, VALUE mode, int createNX) {
-  
+
   VALUE return_value    =  Qfalse;
 #ifdef UNICODE_SUPPORT_VERSION
   VALUE dbName_utf16    = Qnil;
@@ -2882,7 +2882,7 @@ VALUE ruby_ibm_db_createDb_helper(VALUE connection, VALUE dbName, VALUE codeSet,
       create_db_args->dbName_string_len =  RSTRING_LEN(dbName_utf16)/sizeof(SQLWCHAR); /*RSTRING_LEN returns number of bytes*/
 
 	  if(!NIL_P(codeSet)){
-        codeSet_utf16            =  _ruby_ibm_db_export_str_to_utf16(codeSet); 
+        codeSet_utf16            =  _ruby_ibm_db_export_str_to_utf16(codeSet);
         create_db_args->codeSet  =  (SQLWCHAR*)RSTRING_PTR(codeSet_utf16);
         create_db_args->codeSet_string_len =  RSTRING_LEN(codeSet_utf16)/sizeof(SQLWCHAR); /*RSTRING_LEN returns number of bytes*/
 	  } else {
@@ -2919,7 +2919,7 @@ VALUE ruby_ibm_db_createDb_helper(VALUE connection, VALUE dbName, VALUE codeSet,
 	_ruby_ibm_db_clear_conn_err_cache();
 
 #ifdef UNICODE_SUPPORT_VERSION
-        rc = rb_thread_blocking_region( (void *)_ruby_ibm_db_SQLCreateDB_helper, create_db_args,
+        rc = rb_thread_call_without_gvl( (void *)_ruby_ibm_db_SQLCreateDB_helper, create_db_args,
                        (void *)_ruby_ibm_db_Connection_level_UBF, NULL );
 #else
         rc = _ruby_ibm_db_SQLCreateDB_helper( create_db_args );
@@ -2953,7 +2953,7 @@ VALUE ruby_ibm_db_createDb_helper(VALUE connection, VALUE dbName, VALUE codeSet,
     create_db_args = NULL;
   }
 
-  return return_value;  
+  return return_value;
 }
 /*  */
 /*
@@ -2965,7 +2965,7 @@ VALUE ruby_ibm_db_createDb_helper(VALUE connection, VALUE dbName, VALUE codeSet,
  * Creates a database with the specified name. Returns true if operation successful else false
  *
  * ===Parameters
- * 
+ *
  * connection
  *     A valid database connection resource variable as returned from IBM_DB.connect() or IBM_DB.pconnect() with parameter ATTACH=true specified.
  *     IBM_DB.connect('DRIVER={IBM DB2 ODBC DRIVER};ATTACH=true;HOSTNAME=myhost;PORT=1234;PROTOCOL=TCPIP;UID=user;PWD=secret;','','')
@@ -2976,7 +2976,7 @@ VALUE ruby_ibm_db_createDb_helper(VALUE connection, VALUE dbName, VALUE codeSet,
  *
  * codeSet
  *      Database code set information.
- *      Note: If the value of the codeSet argument is not specified, 
+ *      Note: If the value of the codeSet argument is not specified,
  *      the database is created in the Unicode code page for DB2 data servers and in the UTF-8 code page for IDS data servers
  *
  * mode
@@ -2984,8 +2984,8 @@ VALUE ruby_ibm_db_createDb_helper(VALUE connection, VALUE dbName, VALUE codeSet,
  *      Note: This value is applicable only to IDS data servers
  *
  * ===Return Values
- * 
- * Returns TRUE on success or FALSE on failure. 
+ *
+ * Returns TRUE on success or FALSE on failure.
  */
 VALUE ibm_db_createDB(int argc, VALUE *argv, VALUE self)
 {
@@ -2996,7 +2996,7 @@ VALUE ibm_db_createDB(int argc, VALUE *argv, VALUE self)
 
   rb_scan_args(argc, argv, "22", &connection, &dbName, &codeSet, &mode);
 
-  return ruby_ibm_db_createDb_helper(connection, dbName, codeSet, mode, 0);  
+  return ruby_ibm_db_createDb_helper(connection, dbName, codeSet, mode, 0);
 }
 /*
  *  DropDb helper
@@ -3048,7 +3048,7 @@ VALUE ruby_ibm_db_dropDb_helper(VALUE connection, VALUE dbName) {
 	_ruby_ibm_db_clear_conn_err_cache();
 
 #ifdef UNICODE_SUPPORT_VERSION
-        rc = rb_thread_blocking_region( (void *)_ruby_ibm_db_SQLDropDB_helper, drop_db_args,
+        rc = rb_thread_call_without_gvl( (void *)_ruby_ibm_db_SQLDropDB_helper, drop_db_args,
                        (void *)_ruby_ibm_db_Connection_level_UBF, NULL );
 #else
         rc = _ruby_ibm_db_SQLDropDB_helper( drop_db_args );
@@ -3070,7 +3070,7 @@ VALUE ruby_ibm_db_dropDb_helper(VALUE connection, VALUE dbName) {
     drop_db_args = NULL;
   }
 
-  return return_value;  
+  return return_value;
 }
 /*  */
 /*
@@ -3082,7 +3082,7 @@ VALUE ruby_ibm_db_dropDb_helper(VALUE connection, VALUE dbName) {
  * Drops a database with the specified name. Returns true if operation successful else false
  *
  * ===Parameters
- * 
+ *
  * connection
  *     A valid database connection resource variable as returned from IBM_DB.connect() or IBM_DB.pconnect() with parameter ATTACH=true specified.
  *     IBM_DB.connect('DRIVER={IBM DB2 ODBC DRIVER};ATTACH=true;HOSTNAME=myhost;PORT=1234;PROTOCOL=TCPIP;UID=user;PWD=secret;','','')
@@ -3091,8 +3091,8 @@ VALUE ruby_ibm_db_dropDb_helper(VALUE connection, VALUE dbName) {
  *     Name of the database that is to be created.
  *
  * ===Return Values
- * 
- * Returns TRUE on success or FALSE on failure. 
+ *
+ * Returns TRUE on success or FALSE on failure.
  */
 VALUE ibm_db_dropDB(int argc, VALUE *argv, VALUE self)
 {
@@ -3115,7 +3115,7 @@ VALUE ibm_db_dropDB(int argc, VALUE *argv, VALUE self)
  * Returns true if operation successful else false
  *
  * ===Parameters
- * 
+ *
  * connection
  *     A valid database connection resource variable as returned from IBM_DB.connect() or IBM_DB.pconnect() with parameter ATTACH=true specified.
  *     IBM_DB.connect('DRIVER={IBM DB2 ODBC DRIVER};ATTACH=true;HOSTNAME=myhost;PORT=1234;PROTOCOL=TCPIP;UID=user;PWD=secret;','','')
@@ -3126,7 +3126,7 @@ VALUE ibm_db_dropDB(int argc, VALUE *argv, VALUE self)
  *
  * codeSet
  *      Database code set information.
- *      Note: If the value of the codeSet argument is not specified, 
+ *      Note: If the value of the codeSet argument is not specified,
  *      the database is created in the Unicode code page for DB2 data servers and in the UTF-8 code page for IDS data servers
  *
  * mode
@@ -3134,8 +3134,8 @@ VALUE ibm_db_dropDB(int argc, VALUE *argv, VALUE self)
  *      Note: This value is applicable only to IDS data servers
  *
  * ===Return Values
- * 
- * Returns TRUE on success or FALSE on failure. 
+ *
+ * Returns TRUE on success or FALSE on failure.
  */
 /*VALUE ibm_db_recreateDB(int argc, VALUE *argv, VALUE self)
 {
@@ -3153,7 +3153,7 @@ VALUE ibm_db_dropDB(int argc, VALUE *argv, VALUE self)
     return Qfalse;
   }
 
-  return ruby_ibm_db_createDb_helper(connection, dbName, codeSet, mode);  
+  return ruby_ibm_db_createDb_helper(connection, dbName, codeSet, mode);
 }*/
 /*  */
 /*
@@ -3167,7 +3167,7 @@ VALUE ibm_db_dropDB(int argc, VALUE *argv, VALUE self)
  * Returns true if operation successful else false
  *
  * ===Parameters
- * 
+ *
  * connection
  *     A valid database connection resource variable as returned from IBM_DB.connect() or IBM_DB.pconnect() with parameter ATTACH=true specified.
  *     IBM_DB.connect('DRIVER={IBM DB2 ODBC DRIVER};ATTACH=true;HOSTNAME=myhost;PORT=1234;PROTOCOL=TCPIP;UID=user;PWD=secret;','','')
@@ -3178,7 +3178,7 @@ VALUE ibm_db_dropDB(int argc, VALUE *argv, VALUE self)
  *
  * codeSet
  *      Database code set information.
- *      Note: If the value of the codeSet argument is not specified, 
+ *      Note: If the value of the codeSet argument is not specified,
  *      the database is created in the Unicode code page for DB2 data servers and in the UTF-8 code page for IDS data servers
  *
  * mode
@@ -3186,8 +3186,8 @@ VALUE ibm_db_dropDB(int argc, VALUE *argv, VALUE self)
  *      Note: This value is applicable only to IDS data servers
  *
  * ===Return Values
- * 
- * Returns TRUE on success or FALSE on failure. 
+ *
+ * Returns TRUE on success or FALSE on failure.
  */
 VALUE ibm_db_createDBNX(int argc, VALUE *argv, VALUE self)
 {
@@ -3199,7 +3199,7 @@ VALUE ibm_db_createDBNX(int argc, VALUE *argv, VALUE self)
 
   rb_scan_args(argc, argv, "22", &connection, &dbName, &codeSet, &mode);
 
-  return ruby_ibm_db_createDb_helper(connection, dbName, codeSet, mode, 1);  
+  return ruby_ibm_db_createDb_helper(connection, dbName, codeSet, mode, 1);
 }
 /*  */
 
@@ -3219,9 +3219,9 @@ VALUE ibm_db_createDBNX(int argc, VALUE *argv, VALUE self)
  * value
  *   One of the following constants:
  *   SQL_AUTOCOMMIT_OFF
- *       Turns AUTOCOMMIT off. 
+ *       Turns AUTOCOMMIT off.
  *   SQL_AUTOCOMMIT_ON
- *       Turns AUTOCOMMIT on. 
+ *       Turns AUTOCOMMIT on.
  *
  * ===Return Values
  *
@@ -3229,10 +3229,10 @@ VALUE ibm_db_createDBNX(int argc, VALUE *argv, VALUE self)
  * of AUTOCOMMIT for the requested connection as an integer value.
  * A value of 0 indicates that AUTOCOMMIT is off, while a value of 1 indicates that AUTOCOMMIT is on.
  *
- * When IBM_DB.autocommit() receives both the connection parameter and autocommit parameter, 
+ * When IBM_DB.autocommit() receives both the connection parameter and autocommit parameter,
  * it attempts to set the AUTOCOMMIT state of the requested connection to the corresponding state.
  *
- * Returns TRUE on success or FALSE on failure. 
+ * Returns TRUE on success or FALSE on failure.
  */
 VALUE ibm_db_autocommit(int argc, VALUE *argv, VALUE self)
 {
@@ -3267,7 +3267,7 @@ VALUE ibm_db_autocommit(int argc, VALUE *argv, VALUE self)
         handleAttr_args->handle      =  &( conn_res->hdbc );
         handleAttr_args->strLength   =  SQL_IS_INTEGER;
         handleAttr_args->attribute   =  SQL_ATTR_AUTOCOMMIT;
-        
+
 
 #ifndef PASE
         handleAttr_args->valuePtr = (SQLPOINTER)autocommit;
@@ -3283,10 +3283,10 @@ VALUE ibm_db_autocommit(int argc, VALUE *argv, VALUE self)
           conn_res->auto_commit = autocommit;
 
           /* If autocommit is requested to be turned ON and there is a transaction in progress, the trasaction is committed.
-           * Hence set flag_transaction  to 0 indicating no transaction is in progress */ 
+           * Hence set flag_transaction  to 0 indicating no transaction is in progress */
           if( autocommit == SQL_AUTOCOMMIT_ON ) {
             conn_res->transaction_active = 0;
-          } 
+          }
         }
       }
       ruby_xfree( handleAttr_args );
@@ -3392,10 +3392,10 @@ static void _ruby_ibm_db_add_param_cache( stmt_handle *stmt_res, int param_no, c
 }
 
 /*
-  VALUE ibm_db_bind_param_helper(char * varname, long varname_len ,long param_type, long data_type, long precision, 
+  VALUE ibm_db_bind_param_helper(char * varname, long varname_len ,long param_type, long data_type, long precision,
                                  long scale, long size, stmt_handle *stmt_res, describeparam_args *data)
 */
-VALUE ibm_db_bind_param_helper(int argc, char * varname, long varname_len ,long param_type, long data_type, 
+VALUE ibm_db_bind_param_helper(int argc, char * varname, long varname_len ,long param_type, long data_type,
                             long precision, long scale, long size, stmt_handle *stmt_res, describeparam_args *data) {
   int   rc            =  0;
   VALUE return_value  =  Qtrue;
@@ -3410,7 +3410,7 @@ VALUE ibm_db_bind_param_helper(int argc, char * varname, long varname_len ,long 
       param_type = SQL_PARAM_INPUT;
 
       #ifdef UNICODE_SUPPORT_VERSION
-        rc  =  rb_thread_blocking_region( (void *)_ruby_ibm_db_SQLDescribeParam_helper, data,
+        rc  =  rb_thread_call_without_gvl( (void *)_ruby_ibm_db_SQLDescribeParam_helper, data,
                          (void *)_ruby_ibm_db_Statement_level_UBF, stmt_res);
       #else
         rc  =  _ruby_ibm_db_SQLDescribeParam_helper( data );
@@ -3423,14 +3423,14 @@ VALUE ibm_db_bind_param_helper(int argc, char * varname, long varname_len ,long 
       }
 
       /* Add to cache */
-      _ruby_ibm_db_add_param_cache( stmt_res, data->param_no, varname, varname_len, param_type, size, 
+      _ruby_ibm_db_add_param_cache( stmt_res, data->param_no, varname, varname_len, param_type, size,
                 data->sql_data_type, data->sql_precision, data->sql_scale, data->sql_nullable );
       break;
 
     case 4:
 
       #ifdef UNICODE_SUPPORT_VERSION
-        rc = rb_thread_blocking_region( (void *)_ruby_ibm_db_SQLDescribeParam_helper, data,
+        rc = rb_thread_call_without_gvl( (void *)_ruby_ibm_db_SQLDescribeParam_helper, data,
                        (void *)_ruby_ibm_db_Statement_level_UBF, stmt_res);
       #else
         rc = _ruby_ibm_db_SQLDescribeParam_helper( data );
@@ -3443,14 +3443,14 @@ VALUE ibm_db_bind_param_helper(int argc, char * varname, long varname_len ,long 
       }
 
       /* Add to cache */
-      _ruby_ibm_db_add_param_cache( stmt_res, data->param_no, varname, varname_len, param_type, size, 
+      _ruby_ibm_db_add_param_cache( stmt_res, data->param_no, varname, varname_len, param_type, size,
                 data->sql_data_type, data->sql_precision, data->sql_scale, data->sql_nullable );
       break;
 
     case 5:
 
       #ifdef UNICODE_SUPPORT_VERSION
-        rc = rb_thread_blocking_region( (void *)_ruby_ibm_db_SQLDescribeParam_helper, data,
+        rc = rb_thread_call_without_gvl( (void *)_ruby_ibm_db_SQLDescribeParam_helper, data,
                        (void *)_ruby_ibm_db_Statement_level_UBF, stmt_res );
       #else
         rc = _ruby_ibm_db_SQLDescribeParam_helper( data );
@@ -3464,14 +3464,14 @@ VALUE ibm_db_bind_param_helper(int argc, char * varname, long varname_len ,long 
       data->sql_data_type = (SQLSMALLINT)data_type;
 
       /* Add to cache */
-      _ruby_ibm_db_add_param_cache( stmt_res, data->param_no, varname, varname_len, param_type, size, 
+      _ruby_ibm_db_add_param_cache( stmt_res, data->param_no, varname, varname_len, param_type, size,
                 data->sql_data_type, data->sql_precision, data->sql_scale, data->sql_nullable );
       break;
 
     case 6:
 
       #ifdef UNICODE_SUPPORT_VERSION
-        rc = rb_thread_blocking_region( (void *)_ruby_ibm_db_SQLDescribeParam_helper, data,
+        rc = rb_thread_call_without_gvl( (void *)_ruby_ibm_db_SQLDescribeParam_helper, data,
                        (void *)_ruby_ibm_db_Statement_level_UBF, stmt_res );
       #else
         rc = _ruby_ibm_db_SQLDescribeParam_helper( data );
@@ -3486,7 +3486,7 @@ VALUE ibm_db_bind_param_helper(int argc, char * varname, long varname_len ,long 
       data->sql_precision = (SQLUINTEGER)precision;
 
       /* Add to cache */
-      _ruby_ibm_db_add_param_cache( stmt_res, data->param_no, varname, varname_len, param_type, size, 
+      _ruby_ibm_db_add_param_cache( stmt_res, data->param_no, varname, varname_len, param_type, size,
                 data->sql_data_type, data->sql_precision, data->sql_scale, data->sql_nullable );
       break;
 
@@ -3500,7 +3500,7 @@ VALUE ibm_db_bind_param_helper(int argc, char * varname, long varname_len ,long 
       data->sql_precision = (SQLUINTEGER)precision;
       data->sql_scale     = (SQLSMALLINT)scale;
 
-      _ruby_ibm_db_add_param_cache( stmt_res, data->param_no, varname, varname_len, param_type, size, 
+      _ruby_ibm_db_add_param_cache( stmt_res, data->param_no, varname, varname_len, param_type, size,
                 data->sql_data_type, data->sql_precision, data->sql_scale, data->sql_nullable );
       break;
 
@@ -3512,12 +3512,12 @@ VALUE ibm_db_bind_param_helper(int argc, char * varname, long varname_len ,long 
 
   if( rc == SQL_ERROR ) {
 #ifdef UNICODE_SUPPORT_VERSION
-        /*String in SQLWCHAR(utf16) format will contain '\0' due to which the err string will be printed wrong, 
+        /*String in SQLWCHAR(utf16) format will contain '\0' due to which the err string will be printed wrong,
          * hence convert it to utf8 format
          */
         err_str = RSTRING_PTR(
-                    _ruby_ibm_db_export_sqlwchar_to_utf8_rstr( stmt_res->ruby_stmt_err_msg, 
-                       DB2_MAX_ERR_MSG_LEN * sizeof(SQLWCHAR) ) 
+                    _ruby_ibm_db_export_sqlwchar_to_utf8_rstr( stmt_res->ruby_stmt_err_msg,
+                       DB2_MAX_ERR_MSG_LEN * sizeof(SQLWCHAR) )
                   );
         rb_warn("Describe Param Failed: %s", err_str );
 #else
@@ -3546,36 +3546,36 @@ VALUE ibm_db_bind_param_helper(int argc, char * varname, long varname_len ,long 
  * ===Parameters
  *
  * stmt
- *   A prepared statement returned from IBM_DB.prepare(). 
+ *   A prepared statement returned from IBM_DB.prepare().
  *
  * parameter-number
- *   Specifies the 1-indexed position of the parameter in the prepared statement. 
+ *   Specifies the 1-indexed position of the parameter in the prepared statement.
  *
  * variable-name
- *   A string specifying the name of the Ruby variable to bind to the parameter specified by parameter-number. 
+ *   A string specifying the name of the Ruby variable to bind to the parameter specified by parameter-number.
  *
  * parameter-type
  *   A constant specifying whether the Ruby variable should be bound to the SQL parameter as an input parameter
  *   (SQL_PARAM_INPUT), an output parameter (SQL_PARAM_OUTPUT), or as a parameter that accepts input and returns output
  *   (SQL_PARAM_INPUT_OUTPUT). To avoid memory overhead, you can also specify PARAM_FILE to bind the Ruby variable
- *   to the name of a file that contains large object (BLOB, CLOB, or DBCLOB) data. 
+ *   to the name of a file that contains large object (BLOB, CLOB, or DBCLOB) data.
  *
  * data-type
  *   A constant specifying the SQL data type that the Ruby variable should be bound as: one of SQL_BINARY,
- *   DB2_CHAR, DB2_DOUBLE, or DB2_LONG . 
+ *   DB2_CHAR, DB2_DOUBLE, or DB2_LONG .
  *
  * precision
- *   Specifies the precision that the variable should be bound to the database. 
+ *   Specifies the precision that the variable should be bound to the database.
  *
  * scale
- *    Specifies the scale that the variable should be bound to the database. 
+ *    Specifies the scale that the variable should be bound to the database.
  *
  * size
  *    Specifies the size that should be retreived from an INOUT/OUT parameter.
  *
  * ===Return Values
  *
- * Returns TRUE on success or FALSE on failure. 
+ * Returns TRUE on success or FALSE on failure.
  */
 VALUE ibm_db_bind_param(int argc, VALUE *argv, VALUE self)
 {
@@ -3596,7 +3596,7 @@ VALUE ibm_db_bind_param(int argc, VALUE *argv, VALUE self)
   VALUE r_param_no, r_varname, r_param_type=Qnil, r_size=Qnil;
   VALUE r_data_type=Qnil, r_precision=Qnil, r_scale=Qnil;
 
-  rb_scan_args(argc, argv, "35", &stmt, &r_param_no, &r_varname, 
+  rb_scan_args(argc, argv, "35", &stmt, &r_param_no, &r_varname,
     &r_param_type, &r_data_type, &r_precision, &r_scale, &r_size);
 
 #ifdef UNICODE_SUPPORT_VERSION
@@ -3642,7 +3642,7 @@ VALUE ibm_db_bind_param(int argc, VALUE *argv, VALUE self)
     rb_warn("Invalid Statement resource specified");
     return_value = Qfalse;
   }
- 
+
   /*Free any memory used*/
   if(desc_param_args != NULL) {
     ruby_xfree( desc_param_args );
@@ -3659,19 +3659,19 @@ VALUE ibm_db_bind_param(int argc, VALUE *argv, VALUE self)
  *
  * bool IBM_DB.close ( resource connection )
  *
- * This function closes a DB2 client connection created with IBM_DB.connect() and returns 
+ * This function closes a DB2 client connection created with IBM_DB.connect() and returns
  * the corresponding resources to the database server.
- * 
+ *
  * If you attempt to close a persistent DB2 client connection created with IBM_DB.pconnect(), the close request
  * returns TRUE and the persistent DB2 client connection remains available for the next caller.
- * 
+ *
  * ===Parameters
  *
  * connection
- *   Specifies an active DB2 client connection. 
+ *   Specifies an active DB2 client connection.
  *
  * ===Return Values
- * Returns TRUE on success or FALSE on failure. 
+ * Returns TRUE on success or FALSE on failure.
  */
 VALUE ibm_db_close(int argc, VALUE *argv, VALUE self)
 {
@@ -3703,7 +3703,7 @@ VALUE ibm_db_close(int argc, VALUE *argv, VALUE self)
         end_X_args->completionType  =  SQL_ROLLBACK;        /*Remeber you are rolling back the transaction*/
 
         #ifdef UNICODE_SUPPORT_VERSION
-          rc = rb_thread_blocking_region( (void *)_ruby_ibm_db_SQLEndTran, end_X_args,
+          rc = rb_thread_call_without_gvl( (void *)_ruby_ibm_db_SQLEndTran, end_X_args,
                          (void *)_ruby_ibm_db_Connection_level_UBF, NULL);
         #else
           rc = _ruby_ibm_db_SQLEndTran( end_X_args );
@@ -3721,7 +3721,7 @@ VALUE ibm_db_close(int argc, VALUE *argv, VALUE self)
       }
 
       #ifdef UNICODE_SUPPORT_VERSION
-        rc = rb_thread_blocking_region( (void *)_ruby_ibm_db_SQLDisconnect_helper, &(conn_res->hdbc),
+        rc = rb_thread_call_without_gvl( (void *)_ruby_ibm_db_SQLDisconnect_helper, &(conn_res->hdbc),
                        (void *)_ruby_ibm_db_Connection_level_UBF, NULL);
       #else
         rc = _ruby_ibm_db_SQLDisconnect_helper( &(conn_res->hdbc) );
@@ -3761,34 +3761,34 @@ VALUE ibm_db_close(int argc, VALUE *argv, VALUE self)
 
 /*
  * IBM_DB.column_privileges --  Returns a result set listing the columns and associated privileges for a table
- * 
+ *
  * ===Description
- * resource IBM_DB.column_privileges ( resource connection [, string qualifier [, string schema 
+ * resource IBM_DB.column_privileges ( resource connection [, string qualifier [, string schema
  *                                               [, string table-name [, string column-name]]]] )
- * 
+ *
  * Returns a result set listing the columns and associated privileges for a table.
  * ===Parameters
- * 
+ *
  * connection
- *     A valid connection to an IBM DB2, Cloudscape, or Apache Derby database. 
- * 
+ *     A valid connection to an IBM DB2, Cloudscape, or Apache Derby database.
+ *
  * qualifier
  *     A qualifier for DB2 databases running on OS/390 or z/OS servers. For other databases,
- *     pass NULL or an empty string. 
- * 
+ *     pass NULL or an empty string.
+ *
  * schema
- *     The schema which contains the tables. To match all schemas, pass NULL or an empty string. 
- * 
+ *     The schema which contains the tables. To match all schemas, pass NULL or an empty string.
+ *
  * table-name
- *     The name of the table or view. To match all tables in the database, pass NULL or an empty string. 
- * 
+ *     The name of the table or view. To match all tables in the database, pass NULL or an empty string.
+ *
  * column-name
- *     The name of the column. To match all columns in the table, pass NULL or an empty string. 
- * 
+ *     The name of the column. To match all columns in the table, pass NULL or an empty string.
+ *
  * ===Return Values
  * Returns a statement resource with a result set containing rows describing the column privileges
  * for columns matching the specified parameters. The rows are composed of the following columns:
- * 
+ *
  * <b>Column name</b>:: <b>Description</b>
  * TABLE_CAT:: Name of the catalog. The value is NULL if this table does not have catalogs.
  * TABLE_SCHEM:: Name of the schema.
@@ -3825,7 +3825,7 @@ VALUE ibm_db_column_privileges(int argc, VALUE *argv, VALUE self)
 
   int rc;
 
-  rb_scan_args(argc, argv, "14", &connection, 
+  rb_scan_args(argc, argv, "14", &connection,
     &r_qualifier, &r_owner, &r_table_name, &r_column_name);
 
   col_privileges_args = ALLOC( metadata_args );
@@ -3870,7 +3870,7 @@ VALUE ibm_db_column_privileges(int argc, VALUE *argv, VALUE self)
             r_owner_utf16                         =   _ruby_ibm_db_export_str_to_utf16( r_owner  );
             col_privileges_args->owner            =   (SQLWCHAR*)   RSTRING_PTR( r_owner_utf16 );
             col_privileges_args->owner_len        =   (SQLSMALLINT) RSTRING_LEN( r_owner_utf16 )/sizeof(SQLWCHAR);
-#else 
+#else
             col_privileges_args->owner            =   (SQLCHAR*)    RSTRING_PTR( r_owner );
             col_privileges_args->owner_len        =   (SQLSMALLINT) RSTRING_LEN( r_owner );
 #endif
@@ -3898,7 +3898,7 @@ VALUE ibm_db_column_privileges(int argc, VALUE *argv, VALUE self)
           col_privileges_args->stmt_res  =  stmt_res;
 
           #ifdef UNICODE_SUPPORT_VERSION
-            rc = rb_thread_blocking_region( (void *)_ruby_ibm_db_SQLColumnPrivileges_helper, col_privileges_args,
+            rc = rb_thread_call_without_gvl( (void *)_ruby_ibm_db_SQLColumnPrivileges_helper, col_privileges_args,
                            (void *)_ruby_ibm_db_Statement_level_UBF, stmt_res );
           #else
             rc = _ruby_ibm_db_SQLColumnPrivileges_helper( col_privileges_args );
@@ -3906,7 +3906,7 @@ VALUE ibm_db_column_privileges(int argc, VALUE *argv, VALUE self)
 
           if (rc == SQL_ERROR ) {
 
-            _ruby_ibm_db_check_sql_errors( conn_res, DB_CONN, (SQLHSTMT)stmt_res->hstmt, SQL_HANDLE_STMT, rc, 1, 
+            _ruby_ibm_db_check_sql_errors( conn_res, DB_CONN, (SQLHSTMT)stmt_res->hstmt, SQL_HANDLE_STMT, rc, 1,
                       NULL, NULL, -1, 1, 1 );
 
             _ruby_ibm_db_free_stmt_struct( stmt_res );
@@ -3937,29 +3937,29 @@ VALUE ibm_db_column_privileges(int argc, VALUE *argv, VALUE self)
  * IBM_DB.columns --  Returns a result set listing the columns and associated metadata for a table
  * ===Description
  * resource IBM_DB.columns ( resource connection [, string qualifier [, string schema [, string table-name [, string column-name]]]] )
- * 
+ *
  * Returns a result set listing the columns and associated metadata for a table.
- * 
+ *
  * ===Parameters
  * connection
- *     A valid connection to an IBM DB2, Cloudscape, or Apache Derby database. 
- * 
+ *     A valid connection to an IBM DB2, Cloudscape, or Apache Derby database.
+ *
  * qualifier
- *     A qualifier for DB2 databases running on OS/390 or z/OS servers. For other databases, pass NULL or an empty string. 
- * 
+ *     A qualifier for DB2 databases running on OS/390 or z/OS servers. For other databases, pass NULL or an empty string.
+ *
  * schema
- *     The schema which contains the tables. To match all schemas, pass '%'. 
- * 
+ *     The schema which contains the tables. To match all schemas, pass '%'.
+ *
  * table-name
- *     The name of the table or view. To match all tables in the database, pass NULL or an empty string. 
- * 
+ *     The name of the table or view. To match all tables in the database, pass NULL or an empty string.
+ *
  * column-name
- *     The name of the column. To match all columns in the table, pass NULL or an empty string. 
- * 
+ *     The name of the column. To match all columns in the table, pass NULL or an empty string.
+ *
  * ===Return Values
  * Returns a statement resource with a result set containing rows describing the columns matching the specified parameters.
  * The rows are composed of the following columns:
- * 
+ *
  * <b>Column name</b>:: <b>Description</b>
  * TABLE_CAT:: Name of the catalog. The value is NULL if this table does not have catalogs.
  * TABLE_SCHEM:: Name of the schema.
@@ -4004,7 +4004,7 @@ VALUE ibm_db_columns(int argc, VALUE *argv, VALUE self)
 
   int rc;
 
-  rb_scan_args(argc, argv, "14", &connection, 
+  rb_scan_args(argc, argv, "14", &connection,
     &r_qualifier, &r_owner, &r_table_name, &r_column_name);
 
   col_metadata_args = ALLOC( metadata_args );
@@ -4078,7 +4078,7 @@ VALUE ibm_db_columns(int argc, VALUE *argv, VALUE self)
         col_metadata_args->stmt_res  =  stmt_res;
 
         #ifdef UNICODE_SUPPORT_VERSION
-          rc = rb_thread_blocking_region( (void *)_ruby_ibm_db_SQLColumns_helper, col_metadata_args,
+          rc = rb_thread_call_without_gvl( (void *)_ruby_ibm_db_SQLColumns_helper, col_metadata_args,
                          (void *)_ruby_ibm_db_Statement_level_UBF, stmt_res );
         #else
           rc = _ruby_ibm_db_SQLColumns_helper( col_metadata_args );
@@ -4086,7 +4086,7 @@ VALUE ibm_db_columns(int argc, VALUE *argv, VALUE self)
 
         if (rc == SQL_ERROR ) {
 
-          _ruby_ibm_db_check_sql_errors( conn_res, DB_CONN, (SQLHSTMT)stmt_res->hstmt, SQL_HANDLE_STMT, rc, 1, 
+          _ruby_ibm_db_check_sql_errors( conn_res, DB_CONN, (SQLHSTMT)stmt_res->hstmt, SQL_HANDLE_STMT, rc, 1,
                       NULL, NULL, -1, 1, 1 );
 
           _ruby_ibm_db_free_stmt_struct( stmt_res );
@@ -4115,33 +4115,33 @@ VALUE ibm_db_columns(int argc, VALUE *argv, VALUE self)
 
 /*
  * IBM_DB.foreign_keys --  Returns a result set listing the foreign keys for a table
- * 
+ *
  * ===Description
  * resource IBM_DB.foreign_keys ( resource connection, string qualifier, string schema, string table-name )
- * 
+ *
  * Returns a result set listing the foreign keys for a table.
- * 
+ *
  * ===Parameters
- * 
+ *
  * connection
- *     A valid connection to an IBM DB2, Cloudscape, or Apache Derby database. 
- * 
+ *     A valid connection to an IBM DB2, Cloudscape, or Apache Derby database.
+ *
  * qualifier
  *     A qualifier for DB2 databases running on OS/390 or z/OS servers. For other databases, pass NULL
- *     or an empty string. 
- * 
+ *     or an empty string.
+ *
  * schema
  *     The schema which contains the tables. If schema is NULL, IBM_DB.foreign_keys() matches the schema
- *     for the current connection. 
- * 
+ *     for the current connection.
+ *
  * table-name
- *     The name of the table. 
- * 
+ *     The name of the table.
+ *
  * ===Return Values
- * 
+ *
  * Returns a statement resource with a result set containing rows describing the foreign keys for
  * the specified table. The result set is composed of the following columns:
- * 
+ *
  * <b>Column name</b>::  <b>Description</b>
  * PKTABLE_CAT:: Name of the catalog for the table containing the primary key. The value is NULL if this table does not have catalogs.
  * PKTABLE_SCHEM:: Name of the schema for the table containing the primary key.
@@ -4180,7 +4180,7 @@ VALUE ibm_db_foreign_keys(int argc, VALUE *argv, VALUE self)
 
   int rc;
 
-  rb_scan_args(argc, argv, "4", &connection, 
+  rb_scan_args(argc, argv, "4", &connection,
     &r_qualifier, &r_owner, &r_table_name);
 
   col_metadata_args = ALLOC( metadata_args );
@@ -4244,7 +4244,7 @@ VALUE ibm_db_foreign_keys(int argc, VALUE *argv, VALUE self)
         col_metadata_args->stmt_res  =  stmt_res;
 
         #ifdef UNICODE_SUPPORT_VERSION
-          rc = rb_thread_blocking_region( (void *)_ruby_ibm_db_SQLForeignKeys_helper, col_metadata_args,
+          rc = rb_thread_call_without_gvl( (void *)_ruby_ibm_db_SQLForeignKeys_helper, col_metadata_args,
                          (void *)_ruby_ibm_db_Statement_level_UBF, stmt_res );
         #else
           rc = _ruby_ibm_db_SQLForeignKeys_helper( col_metadata_args );
@@ -4252,7 +4252,7 @@ VALUE ibm_db_foreign_keys(int argc, VALUE *argv, VALUE self)
 
         if (rc == SQL_ERROR ) {
 
-          _ruby_ibm_db_check_sql_errors( conn_res, DB_CONN, stmt_res->hstmt, SQL_HANDLE_STMT, rc, 1, 
+          _ruby_ibm_db_check_sql_errors( conn_res, DB_CONN, stmt_res->hstmt, SQL_HANDLE_STMT, rc, 1,
                     NULL, NULL, -1, 1, 1 );
 
           _ruby_ibm_db_free_stmt_struct( stmt_res );
@@ -4274,7 +4274,7 @@ VALUE ibm_db_foreign_keys(int argc, VALUE *argv, VALUE self)
   if(col_metadata_args != NULL) {
     ruby_xfree( col_metadata_args );
     col_metadata_args = NULL;
-  }  
+  }
 
   return return_value;
 }
@@ -4282,31 +4282,31 @@ VALUE ibm_db_foreign_keys(int argc, VALUE *argv, VALUE self)
 
 /*
  * IBM_DB.primary_keys --  Returns a result set listing primary keys for a table
- * 
+ *
  * ===Description
  * resource IBM_DB.primary_keys ( resource connection, string qualifier, string schema, string table-name )
- * 
+ *
  * Returns a result set listing the primary keys for a table.
  *
  * ===Parameters
- * 
+ *
  * connection
- *     A valid connection to an IBM DB2, Cloudscape, or Apache Derby database. 
- * 
+ *     A valid connection to an IBM DB2, Cloudscape, or Apache Derby database.
+ *
  * qualifier
- *     A qualifier for DB2 databases running on OS/390 or z/OS servers. For other databases, pass NULL or an empty string. 
- * 
+ *     A qualifier for DB2 databases running on OS/390 or z/OS servers. For other databases, pass NULL or an empty string.
+ *
  * schema
- *     The schema which contains the tables. If schema is NULL, IBM_DB.primary_keys() matches the schema for the current connection. 
- * 
+ *     The schema which contains the tables. If schema is NULL, IBM_DB.primary_keys() matches the schema for the current connection.
+ *
  * table-name
- *     The name of the table. 
- * 
+ *     The name of the table.
+ *
  * ===Return Values
- * 
+ *
  * Returns a statement resource with a result set containing rows describing the primary keys for the specified table.
  * The result set is composed of the following columns:
- * 
+ *
  * <b>Column name</b>:: <b>Description</b>
  * TABLE_CAT:: Name of the catalog for the table containing the primary key. The value is NULL if this table does not have catalogs.
  * TABLE_SCHEM:: Name of the schema for the table containing the primary key.
@@ -4337,7 +4337,7 @@ VALUE ibm_db_primary_keys(int argc, VALUE *argv, VALUE self)
 
   int rc;
 
-  rb_scan_args(argc, argv, "4", &connection, 
+  rb_scan_args(argc, argv, "4", &connection,
     &r_qualifier, &r_owner, &r_table_name);
 
   col_metadata_args = ALLOC( metadata_args );
@@ -4400,7 +4400,7 @@ VALUE ibm_db_primary_keys(int argc, VALUE *argv, VALUE self)
         col_metadata_args->stmt_res  =  stmt_res;
 
         #ifdef UNICODE_SUPPORT_VERSION
-          rc = rb_thread_blocking_region( (void *)_ruby_ibm_db_SQLPrimaryKeys_helper, col_metadata_args,
+          rc = rb_thread_call_without_gvl( (void *)_ruby_ibm_db_SQLPrimaryKeys_helper, col_metadata_args,
                          (void *)_ruby_ibm_db_Statement_level_UBF, stmt_res );
         #else
           rc = _ruby_ibm_db_SQLPrimaryKeys_helper( col_metadata_args );
@@ -4408,7 +4408,7 @@ VALUE ibm_db_primary_keys(int argc, VALUE *argv, VALUE self)
 
         if (rc == SQL_ERROR ) {
 
-          _ruby_ibm_db_check_sql_errors( conn_res, DB_CONN, stmt_res->hstmt, SQL_HANDLE_STMT, rc, 1, 
+          _ruby_ibm_db_check_sql_errors( conn_res, DB_CONN, stmt_res->hstmt, SQL_HANDLE_STMT, rc, 1,
                     NULL, NULL, -1, 1, 1 );
 
           _ruby_ibm_db_free_stmt_struct( stmt_res );
@@ -4437,35 +4437,35 @@ VALUE ibm_db_primary_keys(int argc, VALUE *argv, VALUE self)
 
 /*
  * IBM_DB.procedure_columns --  Returns a result set listing stored procedure parameters
- * 
+ *
  * ===Description
  * resource IBM_DB.procedure_columns ( resource connection, string qualifier, string schema, string procedure, string parameter )
- * 
+ *
  * Returns a result set listing the parameters for one or more stored procedures.
- * 
+ *
  * ===Parameters
- * 
+ *
  * connection
- *     A valid connection to an IBM DB2, Cloudscape, or Apache Derby database. 
- * 
+ *     A valid connection to an IBM DB2, Cloudscape, or Apache Derby database.
+ *
  * qualifier
- *     A qualifier for DB2 databases running on OS/390 or z/OS servers. For other databases, pass NULL or an empty string. 
- * 
+ *     A qualifier for DB2 databases running on OS/390 or z/OS servers. For other databases, pass NULL or an empty string.
+ *
  * schema
- *     The schema which contains the procedures. This parameter accepts a search pattern containing _ and % as wildcards. 
- * 
+ *     The schema which contains the procedures. This parameter accepts a search pattern containing _ and % as wildcards.
+ *
  * procedure
- *     The name of the procedure. This parameter accepts a search pattern containing _ and % as wildcards. 
- * 
+ *     The name of the procedure. This parameter accepts a search pattern containing _ and % as wildcards.
+ *
  * parameter
  *     The name of the parameter. This parameter accepts a search pattern containing _ and % as wildcards.
- *     If this parameter is NULL, all parameters for the specified stored procedures are returned. 
- * 
+ *     If this parameter is NULL, all parameters for the specified stored procedures are returned.
+ *
  * ===Return Values
- * 
+ *
  * Returns a statement resource with a result set containing rows describing the parameters for the stored procedures
  * matching the specified parameters. The rows are composed of the following columns:
- * 
+ *
  * <b>Column name</b>::  <b>Description</b>
  * PROCEDURE_CAT:: The catalog that contains the procedure. The value is NULL if this table does not have catalogs.
  * PROCEDURE_SCHEM:: Name of the schema that contains the stored procedure.
@@ -4517,7 +4517,7 @@ VALUE ibm_db_procedure_columns(int argc, VALUE *argv, VALUE self)
   conn_handle *conn_res;
   stmt_handle *stmt_res;
 
-  rb_scan_args(argc, argv, "5", &connection, 
+  rb_scan_args(argc, argv, "5", &connection,
     &r_qualifier, &r_owner, &r_proc_name, &r_column_name);
 
   col_metadata_args = ALLOC( metadata_args );
@@ -4591,7 +4591,7 @@ VALUE ibm_db_procedure_columns(int argc, VALUE *argv, VALUE self)
         col_metadata_args->stmt_res  =  stmt_res;
 
         #ifdef UNICODE_SUPPORT_VERSION
-          rc = rb_thread_blocking_region( (void *)_ruby_ibm_db_SQLProcedureColumns_helper, col_metadata_args,
+          rc = rb_thread_call_without_gvl( (void *)_ruby_ibm_db_SQLProcedureColumns_helper, col_metadata_args,
                          (void *)_ruby_ibm_db_Statement_level_UBF, stmt_res);
         #else
           rc = _ruby_ibm_db_SQLProcedureColumns_helper( col_metadata_args );
@@ -4599,7 +4599,7 @@ VALUE ibm_db_procedure_columns(int argc, VALUE *argv, VALUE self)
 
         if (rc == SQL_ERROR ) {
 
-          _ruby_ibm_db_check_sql_errors( conn_res, DB_CONN, stmt_res->hstmt, SQL_HANDLE_STMT, rc, 1, 
+          _ruby_ibm_db_check_sql_errors( conn_res, DB_CONN, stmt_res->hstmt, SQL_HANDLE_STMT, rc, 1,
                     NULL, NULL, -1, 1, 1 );
 
           _ruby_ibm_db_free_stmt_struct( stmt_res );
@@ -4611,7 +4611,7 @@ VALUE ibm_db_procedure_columns(int argc, VALUE *argv, VALUE self)
             _ruby_ibm_db_mark_stmt_struct, _ruby_ibm_db_free_stmt_struct,
             stmt_res);
         } /* SQLProcedureColumns -> rc == SQL_ERROR  */
-      } /*  SQLAllocHandle -> rc == SQL_ERROR       */ 
+      } /*  SQLAllocHandle -> rc == SQL_ERROR       */
     } /*   !conn_res->handle_active                */
   } else {
     return_value = Qfalse;
@@ -4628,30 +4628,30 @@ VALUE ibm_db_procedure_columns(int argc, VALUE *argv, VALUE self)
 
 /*
  * IBM_DB.procedures --  Returns a result set listing the stored procedures registered in a database
- * 
+ *
  * ===Description
  * resource IBM_DB.procedures ( resource connection, string qualifier, string schema, string procedure )
- * 
+ *
  * Returns a result set listing the stored procedures registered in a database.
- * 
+ *
  * ===Parameters
- * 
+ *
  * connection
- *     A valid connection to an IBM DB2, Cloudscape, or Apache Derby database. 
- * 
+ *     A valid connection to an IBM DB2, Cloudscape, or Apache Derby database.
+ *
  * qualifier
- *     A qualifier for DB2 databases running on OS/390 or z/OS servers. For other databases, pass NULL or an empty string. 
- * 
+ *     A qualifier for DB2 databases running on OS/390 or z/OS servers. For other databases, pass NULL or an empty string.
+ *
  * schema
- *     The schema which contains the procedures. This parameter accepts a search pattern containing _ and % as wildcards. 
- * 
+ *     The schema which contains the procedures. This parameter accepts a search pattern containing _ and % as wildcards.
+ *
  * procedure
- *     The name of the procedure. This parameter accepts a search pattern containing _ and % as wildcards. 
- * 
+ *     The name of the procedure. This parameter accepts a search pattern containing _ and % as wildcards.
+ *
  * ===Return Values
- * 
+ *
  * Returns a statement resource with a result set containing rows describing the stored procedures matching the specified parameters. The rows are composed of the following columns:
- * 
+ *
  * <b>Column name</b>:: <b>Description</b>
  * PROCEDURE_CAT:: The catalog that contains the procedure. The value is NULL if this table does not have catalogs.
  * PROCEDURE_SCHEM:: Name of the schema that contains the stored procedure.
@@ -4686,7 +4686,7 @@ VALUE ibm_db_procedures(int argc, VALUE *argv, VALUE self)
   conn_handle *conn_res;
   stmt_handle *stmt_res;
 
-  rb_scan_args(argc, argv, "4", &connection, 
+  rb_scan_args(argc, argv, "4", &connection,
     &r_qualifier, &r_owner, &r_proc_name);
 
   proc_metadata_args = ALLOC( metadata_args );
@@ -4748,7 +4748,7 @@ VALUE ibm_db_procedures(int argc, VALUE *argv, VALUE self)
         proc_metadata_args->stmt_res     =  stmt_res;
 
         #ifdef UNICODE_SUPPORT_VERSION
-          rc = rb_thread_blocking_region( (void *)_ruby_ibm_db_SQLProcedures_helper, proc_metadata_args,
+          rc = rb_thread_call_without_gvl( (void *)_ruby_ibm_db_SQLProcedures_helper, proc_metadata_args,
                          (void *)_ruby_ibm_db_Statement_level_UBF, stmt_res);
         #else
           rc = _ruby_ibm_db_SQLProcedures_helper( proc_metadata_args );
@@ -4756,7 +4756,7 @@ VALUE ibm_db_procedures(int argc, VALUE *argv, VALUE self)
 
         if (rc == SQL_ERROR ) {
 
-          _ruby_ibm_db_check_sql_errors( conn_res, DB_CONN, stmt_res->hstmt, SQL_HANDLE_STMT, rc, 1, 
+          _ruby_ibm_db_check_sql_errors( conn_res, DB_CONN, stmt_res->hstmt, SQL_HANDLE_STMT, rc, 1,
                     NULL, NULL, -1, 1, 1 );
 
           _ruby_ibm_db_free_stmt_struct( stmt_res );
@@ -4773,7 +4773,7 @@ VALUE ibm_db_procedures(int argc, VALUE *argv, VALUE self)
   } else {
     return_value = Qfalse;
   }
-  
+
   /*Free memory allocated*/
   if(proc_metadata_args != NULL) {
     ruby_xfree( proc_metadata_args );
@@ -4785,38 +4785,38 @@ VALUE ibm_db_procedures(int argc, VALUE *argv, VALUE self)
 
 /*
  * IBM_DB.special_columns --  Returns a result set listing the unique row identifier columns for a table
- * 
+ *
  * ===Description
  * resource IBM_DB.special_columns ( resource connection, string qualifier, string schema, string table_name, int scope )
- * 
+ *
  * Returns a result set listing the unique row identifier columns for a table.
- * 
+ *
  * ===Parameters
- * 
+ *
  * connection
- *     A valid connection to an IBM DB2, Cloudscape, or Apache Derby database. 
- * 
+ *     A valid connection to an IBM DB2, Cloudscape, or Apache Derby database.
+ *
  * qualifier
- *     A qualifier for DB2 databases running on OS/390 or z/OS servers. For other databases, pass NULL or an empty string. 
- * 
+ *     A qualifier for DB2 databases running on OS/390 or z/OS servers. For other databases, pass NULL or an empty string.
+ *
  * schema
- *     The schema which contains the tables. 
- * 
+ *     The schema which contains the tables.
+ *
  * table_name
- *     The name of the table. 
- * 
+ *     The name of the table.
+ *
  * scope
  *     Integer value representing the minimum duration for which the unique row identifier is valid. This can be one of the following values:
- * 
+ *
  *     0: Row identifier is valid only while the cursor is positioned on the row. (SQL_SCOPE_CURROW)
  *     1: Row identifier is valid for the duration of the transaction. (SQL_SCOPE_TRANSACTION)
  *     2: Row identifier is valid for the duration of the connection. (SQL_SCOPE_SESSION)
- * 
+ *
  * ===Return Values
- * 
+ *
  * Returns a statement resource with a result set containing rows with unique row identifier information for a table.
  * The rows are composed of the following columns:
- * 
+ *
  * <b>Column name</b>:: <b>Description</b>
  * SCOPE:: Integer value representing the minimum duration for which the unique row identifier is valid.
  *
@@ -4925,7 +4925,7 @@ VALUE ibm_db_special_columns(int argc, VALUE *argv, VALUE self)
         col_metadata_args->stmt_res       =  stmt_res;
 
         #ifdef UNICODE_SUPPORT_VERSION
-          rc = rb_thread_blocking_region( (void *)_ruby_ibm_db_SQLSpecialColumns_helper, col_metadata_args,
+          rc = rb_thread_call_without_gvl( (void *)_ruby_ibm_db_SQLSpecialColumns_helper, col_metadata_args,
                          (void *)_ruby_ibm_db_Statement_level_UBF, stmt_res);
         #else
           rc = _ruby_ibm_db_SQLSpecialColumns_helper( col_metadata_args );
@@ -4933,7 +4933,7 @@ VALUE ibm_db_special_columns(int argc, VALUE *argv, VALUE self)
 
         if (rc == SQL_ERROR ) {
 
-          _ruby_ibm_db_check_sql_errors( conn_res, DB_CONN, stmt_res->hstmt, SQL_HANDLE_STMT, rc, 1, 
+          _ruby_ibm_db_check_sql_errors( conn_res, DB_CONN, stmt_res->hstmt, SQL_HANDLE_STMT, rc, 1,
                     NULL, NULL, -1, 1, 1 );
 
           _ruby_ibm_db_free_stmt_struct( stmt_res );
@@ -4962,61 +4962,61 @@ VALUE ibm_db_special_columns(int argc, VALUE *argv, VALUE self)
 
 /*
  * IBM_DB.statistics --  Returns a result set listing the index and statistics for a table
- * 
+ *
  * ===Description
  * resource IBM_DB.statistics ( resource connection, string qualifier, string schema, string table-name, int unique )
- * 
+ *
  * Returns a result set listing the index and statistics for a table.
- * 
+ *
  * ===Parameters
- * 
+ *
  * connection
- *     A valid connection to an IBM DB2, Cloudscape, or Apache Derby database. 
- * 
+ *     A valid connection to an IBM DB2, Cloudscape, or Apache Derby database.
+ *
  * qualifier
- *     A qualifier for DB2 databases running on OS/390 or z/OS servers. For other databases, pass NULL or an empty string. 
- * 
+ *     A qualifier for DB2 databases running on OS/390 or z/OS servers. For other databases, pass NULL or an empty string.
+ *
  * schema
  *     The schema that contains the targeted table. If this parameter is NULL, the statistics and indexes are
- *     returned for the schema of the current user. 
- * 
+ *     returned for the schema of the current user.
+ *
  * table_name
- *     The name of the table. 
- * 
+ *     The name of the table.
+ *
  * unique
  *     A integer value representing the type of index information to return.
- *      
- *     0    Return only the information for unique indexes on the table. 
- *     
- *     1    Return the information for all indexes on the table. 
- * 
+ *
+ *     0    Return only the information for unique indexes on the table.
+ *
+ *     1    Return the information for all indexes on the table.
+ *
  * ===Return Values
- * 
+ *
  * Returns a statement resource with a result set containing rows describing the statistics and indexes for the base tables
  * matching the specified parameters. The rows are composed of the following columns:
- * 
+ *
  * <b>Column name</b>:: <b>Description</b>
  * TABLE_CAT:: The catalog that contains the table. The value is NULL if this table does not have catalogs.
  * TABLE_SCHEM:: Name of the schema that contains the table.
  * TABLE_NAME:: Name of the table.
  * NON_UNIQUE:: An integer value representing whether the index prohibits unique values, or whether the row represents
  *              statistics on the table itself:
- * 
+ *
  *              Return value:: Parameter type
  *              0 (SQL_FALSE):: The index allows duplicate values.
  *              1 (SQL_TRUE):: The index values must be unique.
  *              NULL:: This row is statistics information for the table itself.
- * 
+ *
  * INDEX_QUALIFIER:: A string value representing the qualifier that would have to be prepended to INDEX_NAME to fully qualify the index.
  * INDEX_NAME:: A string representing the name of the index.
  * TYPE:: An integer value representing the type of information contained in this row of the result set:
- * 
+ *
  *        Return value:: Parameter type
  *        0 (SQL_TABLE_STAT):: The row contains statistics about the table itself.
  *        1 (SQL_INDEX_CLUSTERED):: The row contains information about a clustered index.
  *        2 (SQL_INDEX_HASH):: The row contains information about a hashed index.
  *        3 (SQL_INDEX_OTHER):: The row contains information about a type of index that is neither clustered nor hashed.
- * 
+ *
  * ORDINAL_POSITION:: The 1-indexed position of the column in the index. NULL if the row contains statistics information about the table itself.
  * COLUMN_NAME:: The name of the column in the index. NULL if the row contains statistics information about the table itself.
  * ASC_OR_DESC:: A if the column is sorted in ascending order, D if the column is sorted in descending order, NULL
@@ -5089,7 +5089,7 @@ VALUE ibm_db_statistics(int argc, VALUE *argv, VALUE self)
           r_qualifier_utf16                   =  _ruby_ibm_db_export_str_to_utf16( r_qualifier );
           col_metadata_args->qualifier        =  (SQLWCHAR*)   RSTRING_PTR( r_qualifier_utf16 );
           col_metadata_args->qualifier_len    =  (SQLSMALLINT) RSTRING_LEN( r_qualifier_utf16 )/sizeof(SQLWCHAR);
-#else 
+#else
           col_metadata_args->qualifier        =  (SQLCHAR*)    RSTRING_PTR( r_qualifier );
           col_metadata_args->qualifier_len    =  (SQLSMALLINT) RSTRING_LEN( r_qualifier );
 #endif
@@ -5120,7 +5120,7 @@ VALUE ibm_db_statistics(int argc, VALUE *argv, VALUE self)
         col_metadata_args->stmt_res      =  stmt_res;
 
         #ifdef UNICODE_SUPPORT_VERSION
-          rc = rb_thread_blocking_region( (void *)_ruby_ibm_db_SQLStatistics_helper, col_metadata_args,
+          rc = rb_thread_call_without_gvl( (void *)_ruby_ibm_db_SQLStatistics_helper, col_metadata_args,
                          (void *)_ruby_ibm_db_Statement_level_UBF, stmt_res );
         #else
           rc = _ruby_ibm_db_SQLStatistics_helper( col_metadata_args );
@@ -5128,7 +5128,7 @@ VALUE ibm_db_statistics(int argc, VALUE *argv, VALUE self)
 
         if (rc == SQL_ERROR ) {
 
-          _ruby_ibm_db_check_sql_errors( conn_res, DB_CONN, stmt_res->hstmt, SQL_HANDLE_STMT, rc, 1, 
+          _ruby_ibm_db_check_sql_errors( conn_res, DB_CONN, stmt_res->hstmt, SQL_HANDLE_STMT, rc, 1,
                     NULL, NULL, -1, 1, 1 );
 
           _ruby_ibm_db_free_stmt_struct( stmt_res );
@@ -5157,33 +5157,33 @@ VALUE ibm_db_statistics(int argc, VALUE *argv, VALUE self)
 
 /*
  * IBM_DB.table_privileges --  Returns a result set listing the tables and associated privileges in a database
- * 
+ *
  * ===Description
  * resource IBM_DB.table_privileges ( resource connection [, string qualifier [, string schema [, string table_name]]] )
- * 
+ *
  * Returns a result set listing the tables and associated privileges in a database.
- * 
+ *
  * ===Parameters
- * 
+ *
  * connection
- *     A valid connection to an IBM DB2, Cloudscape, or Apache Derby database. 
- * 
+ *     A valid connection to an IBM DB2, Cloudscape, or Apache Derby database.
+ *
  * qualifier
- *     A qualifier for DB2 databases running on OS/390 or z/OS servers. For other databases, 
- *     pass NULL or an empty string. 
- * 
+ *     A qualifier for DB2 databases running on OS/390 or z/OS servers. For other databases,
+ *     pass NULL or an empty string.
+ *
  * schema
- *     The schema which contains the tables. This parameter accepts a search pattern containing _ 
- *     and % as wildcards. 
- * 
+ *     The schema which contains the tables. This parameter accepts a search pattern containing _
+ *     and % as wildcards.
+ *
  * table_name
- *     The name of the table. This parameter accepts a search pattern containing _ and % as wildcards. 
- * 
+ *     The name of the table. This parameter accepts a search pattern containing _ and % as wildcards.
+ *
  * ===Return Values
- * 
+ *
  * Returns a statement resource with a result set containing rows describing the privileges for the
  * tables that match the specified parameters. The rows are composed of the following columns:
- * 
+ *
  * <b>Column name</b>:: <b>Description</b>
  * TABLE_CAT:: The catalog that contains the table. The value is NULL if this table does not have catalogs.
  * TABLE_SCHEM:: Name of the schema that contains the table.
@@ -5279,7 +5279,7 @@ VALUE ibm_db_table_privileges(int argc, VALUE *argv, VALUE self)
         table_privileges_args->stmt_res       =  stmt_res;
 
         #ifdef UNICODE_SUPPORT_VERSION
-          rc = rb_thread_blocking_region( (void *)_ruby_ibm_db_SQLTablePrivileges_helper, table_privileges_args,
+          rc = rb_thread_call_without_gvl( (void *)_ruby_ibm_db_SQLTablePrivileges_helper, table_privileges_args,
                          (void *)_ruby_ibm_db_Statement_level_UBF, stmt_res );
         #else
           rc = _ruby_ibm_db_SQLTablePrivileges_helper( table_privileges_args );
@@ -5287,7 +5287,7 @@ VALUE ibm_db_table_privileges(int argc, VALUE *argv, VALUE self)
 
         if (rc == SQL_ERROR ) {
 
-          _ruby_ibm_db_check_sql_errors( conn_res, DB_CONN, stmt_res->hstmt, SQL_HANDLE_STMT, rc, 1, 
+          _ruby_ibm_db_check_sql_errors( conn_res, DB_CONN, stmt_res->hstmt, SQL_HANDLE_STMT, rc, 1,
                   NULL, NULL, -1, 1, 1 );
 
           _ruby_ibm_db_free_stmt_struct( stmt_res );
@@ -5316,36 +5316,36 @@ VALUE ibm_db_table_privileges(int argc, VALUE *argv, VALUE self)
 
 /*
  * IBM_DB.tables --  Returns a result set listing the tables and associated metadata in a database
- * 
+ *
  * ===Description
  * resource IBM_DB.tables ( resource connection [, string qualifier [, string schema [, string table-name [, string table-type]]]] )
- * 
+ *
  * Returns a result set listing the tables and associated metadata in a database.
  *
  * ===Parameters
- * 
+ *
  * connection
- *     A valid connection to an IBM DB2, Cloudscape, or Apache Derby database. 
- * 
+ *     A valid connection to an IBM DB2, Cloudscape, or Apache Derby database.
+ *
  * qualifier
- *     A qualifier for DB2 databases running on OS/390 or z/OS servers. For other databases, pass NULL or an empty string. 
- * 
+ *     A qualifier for DB2 databases running on OS/390 or z/OS servers. For other databases, pass NULL or an empty string.
+ *
  * schema
- *     The schema which contains the tables. This parameter accepts a search pattern containing _ and % as wildcards. 
- * 
+ *     The schema which contains the tables. This parameter accepts a search pattern containing _ and % as wildcards.
+ *
  * table-name
- *     The name of the table. This parameter accepts a search pattern containing _ and % as wildcards. 
- * 
+ *     The name of the table. This parameter accepts a search pattern containing _ and % as wildcards.
+ *
  * table-type
  *     A list of comma-delimited table type identifiers. To match all table types, pass NULL or an empty string.
  *     Valid table type identifiers include: ALIAS, HIERARCHY TABLE, INOPERATIVE VIEW, NICKNAME, MATERIALIZED QUERY
- *     TABLE, SYSTEM TABLE, TABLE, TYPED TABLE, TYPED VIEW, and VIEW. 
- * 
+ *     TABLE, SYSTEM TABLE, TABLE, TYPED TABLE, TYPED VIEW, and VIEW.
+ *
  * ===Return Values
- * 
+ *
  * Returns a statement resource with a result set containing rows describing the tables that match the specified parameters.
  * The rows are composed of the following columns:
- * 
+ *
  * <b>Column name</b>:: <b>Description</b>
  * TABLE_CAT:: The catalog that contains the table. The value is NULL if this table does not have catalogs.
  * TABLE_SCHEMA:: Name of the schema that contains the table.
@@ -5377,7 +5377,7 @@ VALUE ibm_db_tables(int argc, VALUE *argv, VALUE self)
 
   int rc;
 
-  rb_scan_args(argc, argv, "14", &connection, 
+  rb_scan_args(argc, argv, "14", &connection,
     &r_qualifier, &r_owner, &r_table_name, &r_table_type);
 
   table_metadata_args = ALLOC( metadata_args );
@@ -5453,7 +5453,7 @@ VALUE ibm_db_tables(int argc, VALUE *argv, VALUE self)
         table_metadata_args->stmt_res      =  stmt_res;
 
         #ifdef UNICODE_SUPPORT_VERSION
-          rc = rb_thread_blocking_region( (void *)_ruby_ibm_db_SQLTables_helper, table_metadata_args,
+          rc = rb_thread_call_without_gvl( (void *)_ruby_ibm_db_SQLTables_helper, table_metadata_args,
                          (void *)_ruby_ibm_db_Statement_level_UBF, stmt_res );
         #else
           rc = _ruby_ibm_db_SQLTables_helper( table_metadata_args );
@@ -5461,7 +5461,7 @@ VALUE ibm_db_tables(int argc, VALUE *argv, VALUE self)
 
         if (rc == SQL_ERROR ) {
 
-          _ruby_ibm_db_check_sql_errors( conn_res, DB_CONN, stmt_res->hstmt, SQL_HANDLE_STMT, rc, 1, 
+          _ruby_ibm_db_check_sql_errors( conn_res, DB_CONN, stmt_res->hstmt, SQL_HANDLE_STMT, rc, 1,
                     NULL, NULL, -1, 1, 1 );
 
           _ruby_ibm_db_free_stmt_struct( stmt_res );
@@ -5492,23 +5492,23 @@ VALUE ibm_db_tables(int argc, VALUE *argv, VALUE self)
  * IBM_DB.commit --  Commits a transaction
  * ===Description
  * bool IBM_DB.commit ( resource connection )
- * 
+ *
  * Commits an in-progress transaction on the specified connection resource and begins a new transaction.
  * Ruby applications normally default to AUTOCOMMIT mode, so IBM_DB.commit() is not necessary unless
  * AUTOCOMMIT has been turned off for the connection resource.
  *
  * <b>Note:</b> If the specified connection resource is a persistent connection, all transactions
  * in progress for all applications using that persistent connection will be committed. For this reason,
- * persistent connections are not recommended for use in applications that require transactions. 
- * 
+ * persistent connections are not recommended for use in applications that require transactions.
+ *
  * ===Parameters
- * 
+ *
  * connection
- *     A valid database connection resource variable as returned from IBM_DB.connect() or IBM_DB.pconnect(). 
- * 
+ *     A valid database connection resource variable as returned from IBM_DB.connect() or IBM_DB.pconnect().
+ *
  * ===Return Values
- * 
- * Returns TRUE on success or FALSE on failure. 
+ *
+ * Returns TRUE on success or FALSE on failure.
  */
 VALUE ibm_db_commit(int argc, VALUE *argv, VALUE self)
 {
@@ -5535,7 +5535,7 @@ VALUE ibm_db_commit(int argc, VALUE *argv, VALUE self)
     end_X_args->completionType  =  SQL_COMMIT;        /*Remeber you are Commiting the transaction*/
 
     #ifdef UNICODE_SUPPORT_VERSION
-      rc = rb_thread_blocking_region( (void *)_ruby_ibm_db_SQLEndTran, end_X_args,
+      rc = rb_thread_call_without_gvl( (void *)_ruby_ibm_db_SQLEndTran, end_X_args,
                      (void *)_ruby_ibm_db_Connection_level_UBF, NULL);
     #else
       rc = _ruby_ibm_db_SQLEndTran( end_X_args );
@@ -5551,7 +5551,7 @@ VALUE ibm_db_commit(int argc, VALUE *argv, VALUE self)
       _ruby_ibm_db_check_sql_errors( conn_res, DB_CONN, conn_res->hdbc, SQL_HANDLE_DBC, rc, 1, NULL, NULL, -1, 1, 1 );
       return Qfalse;
     } else {
-      conn_res->transaction_active = 0; 
+      conn_res->transaction_active = 0;
       return Qtrue;
     }
   }
@@ -5560,10 +5560,10 @@ VALUE ibm_db_commit(int argc, VALUE *argv, VALUE self)
 }
 /*  */
 
-/*  static int _ruby_ibm_db_do_prepare(conn_handle *conn_res, VALUE stmt, stmt_handle *stmt_res, 
+/*  static int _ruby_ibm_db_do_prepare(conn_handle *conn_res, VALUE stmt, stmt_handle *stmt_res,
                                        VALUE options)
 */
-static int _ruby_ibm_db_do_prepare(conn_handle *conn_res, VALUE stmt, stmt_handle *stmt_res, 
+static int _ruby_ibm_db_do_prepare(conn_handle *conn_res, VALUE stmt, stmt_handle *stmt_res,
                                    VALUE options)
 {
   int   rc;
@@ -5615,14 +5615,14 @@ static int _ruby_ibm_db_do_prepare(conn_handle *conn_res, VALUE stmt, stmt_handl
 
     /* Prepare the stmt. The cursor type requested has already been set in _ruby_ibm_db_assign_options */
     #ifdef UNICODE_SUPPORT_VERSION
-      rc = rb_thread_blocking_region( (void *)_ruby_ibm_db_SQLPrepare_helper, prepare_args,
+      rc = rb_thread_call_without_gvl( (void *)_ruby_ibm_db_SQLPrepare_helper, prepare_args,
                      (void *)_ruby_ibm_db_Statement_level_UBF, stmt_res );
     #else
       rc = _ruby_ibm_db_SQLPrepare_helper( prepare_args );
     #endif
 
     if ( rc == SQL_ERROR ) {
-      _ruby_ibm_db_check_sql_errors( conn_res, DB_CONN, stmt_res->hstmt, SQL_HANDLE_STMT, rc, 1, 
+      _ruby_ibm_db_check_sql_errors( conn_res, DB_CONN, stmt_res->hstmt, SQL_HANDLE_STMT, rc, 1,
                 NULL, NULL, -1, 1, 1 );
     }
   }
@@ -5641,40 +5641,40 @@ static int _ruby_ibm_db_do_prepare(conn_handle *conn_res, VALUE stmt, stmt_handl
  * IBM_DB.exec --  Executes an SQL statement directly
  * ===Description
  * resource IBM_DB.exec ( resource connection, string statement [, array options] )
- * 
+ *
  * Prepares and executes an SQL statement.
- * 
+ *
  * If you plan to interpolate Ruby variables into the SQL statement, understand that this is one of
  * the more common security exposures. Consider calling IBM_DB.prepare() to prepare an SQL statement with
  * parameter markers for input values. Then you can call IBM_DB.execute() to pass in the input values
  * and avoid SQL injection attacks.
- * 
+ *
  * If you plan to repeatedly issue the same SQL statement with different parameters, consider calling
  * IBM_DB.prepare() and IBM_DB.execute() to enable the database server to reuse its access plan and increase
  * the efficiency of your database access.
  * ===Parameters
- * 
+ *
  * connection
- *     A valid database connection resource variable as returned from IBM_DB.connect() or IBM_DB.pconnect(). 
- * 
+ *     A valid database connection resource variable as returned from IBM_DB.connect() or IBM_DB.pconnect().
+ *
  * statement
- *     An SQL statement. The statement cannot contain any parameter markers. 
- * 
+ *     An SQL statement. The statement cannot contain any parameter markers.
+ *
  * options
  *     An associative array containing statement options. You can use this parameter to request
  *     a scrollable cursor on database servers that support this functionality.
- * 
+ *
  *     cursor
  *         Passing the SQL_SCROLL_FORWARD_ONLY value requests a forward-only cursor for this SQL statement.
  *         This is the default type of cursor, and it is supported by all database servers.
  *         It is also much faster than a scrollable cursor.
  *         Passing the SQL_CURSOR_KEYSET_DRIVEN value requests a scrollable cursor for this SQL statement.
  *         This type of cursor enables you to fetch rows non-sequentially from the database server.
- *         However, it is only supported by DB2 servers, and is much slower than forward-only cursors. 
- * 
+ *         However, it is only supported by DB2 servers, and is much slower than forward-only cursors.
+ *
  * ===Return Values
- * 
- * Returns a statement resource if the SQL statement was issued successfully, or FALSE if the database failed to execute the SQL statement. 
+ *
+ * Returns a statement resource if the SQL statement was issued successfully, or FALSE if the database failed to execute the SQL statement.
  */
 VALUE ibm_db_exec(int argc, VALUE *argv, VALUE self)
 {
@@ -5753,7 +5753,7 @@ VALUE ibm_db_exec(int argc, VALUE *argv, VALUE self)
       exec_direct_args->stmt_res    =  stmt_res;
 
       #ifdef UNICODE_SUPPORT_VERSION
-        rc = rb_thread_blocking_region( (void *)_ruby_ibm_db_SQLExecDirect_helper, exec_direct_args,
+        rc = rb_thread_call_without_gvl( (void *)_ruby_ibm_db_SQLExecDirect_helper, exec_direct_args,
                        (void *)_ruby_ibm_db_Statement_level_UBF, stmt_res );
       #else
         rc = _ruby_ibm_db_SQLExecDirect_helper( exec_direct_args );
@@ -5761,7 +5761,7 @@ VALUE ibm_db_exec(int argc, VALUE *argv, VALUE self)
 
       if ( rc == SQL_ERROR ) {
 
-        _ruby_ibm_db_check_sql_errors( conn_res, DB_CONN, stmt_res->hstmt, 
+        _ruby_ibm_db_check_sql_errors( conn_res, DB_CONN, stmt_res->hstmt,
                   SQL_HANDLE_STMT, rc, 1, NULL, NULL, -1, 1, 1 );
 
         _ruby_ibm_db_free_stmt_struct( stmt_res );
@@ -5787,22 +5787,22 @@ VALUE ibm_db_exec(int argc, VALUE *argv, VALUE self)
 
 /*
  * IBM_DB.free_result --  Frees resources associated with a result set
- * 
+ *
  * ===Description
  * bool IBM_DB.free_result ( resource stmt )
- * 
+ *
  * Frees the system and database resources that are associated with a result set. These resources
  * are freed implicitly when a script finishes, but you can call IBM_DB.free_result() to explicitly
  * free the result set resources before the end of the script.
- * 
+ *
  * ===Parameters
- * 
+ *
  * stmt
- *     A valid statement resource. 
- * 
+ *     A valid statement resource.
+ *
  * ===Return Values
- * 
- * Returns TRUE on success or FALSE on failure. 
+ *
+ * Returns TRUE on success or FALSE on failure.
  */
 VALUE ibm_db_free_result(int argc, VALUE *argv, VALUE self)
 {
@@ -5828,7 +5828,7 @@ VALUE ibm_db_free_result(int argc, VALUE *argv, VALUE self)
       freeStmt_args->option    =  SQL_CLOSE;
 
       #ifdef UNICODE_SUPPORT_VERSION
-        rc = rb_thread_blocking_region( (void *)_ruby_ibm_db_SQLFreeStmt_helper, freeStmt_args, 
+        rc = rb_thread_call_without_gvl( (void *)_ruby_ibm_db_SQLFreeStmt_helper, freeStmt_args,
                        (void *)_ruby_ibm_db_Statement_level_UBF, stmt_res );
       #else
         rc = _ruby_ibm_db_SQLFreeStmt_helper( freeStmt_args );
@@ -5862,15 +5862,15 @@ VALUE ibm_db_free_result(int argc, VALUE *argv, VALUE self)
 
 /*
  * IBM_DB.prepare --  Prepares an SQL statement to be executed
- * 
+ *
  * ===Description
  * resource IBM_DB.prepare ( resource connection, string statement [, array options] )
- * 
+ *
  * IBM_DB.prepare() creates a prepared SQL statement which can include 0 or more parameter markers
  * (? characters) representing parameters for input, output, or input/output. You can pass parameters
  * to the prepared statement using IBM_DB.bind_param(), or for input values only, as an array passed to
  * IBM_DB.execute().
- * 
+ *
  * There are three main advantages to using prepared statements in your application:
  *     * Performance: when you prepare a statement, the database server creates an optimized access plan
  *       for retrieving data with that statement. Subsequently issuing the prepared statement with
@@ -5881,31 +5881,31 @@ VALUE ibm_db_free_result(int argc, VALUE *argv, VALUE self)
  *       each input value to ensure that the type matches the column definition or parameter definition.
  *     * Advanced functionality: Parameter markers not only enable you to pass input values to prepared
  *       SQL statements, they also enable you to retrieve OUT and INOUT parameters from stored procedures
- *       using IBM_DB.bind_param(). 
- * 
+ *       using IBM_DB.bind_param().
+ *
  * ===Parameters
  * connection
- *     A valid database connection resource variable as returned from IBM_DB.connect() or IBM_DB.pconnect(). 
- * 
+ *     A valid database connection resource variable as returned from IBM_DB.connect() or IBM_DB.pconnect().
+ *
  * statement
- *     An SQL statement, optionally containing one or more parameter markers.. 
- * 
+ *     An SQL statement, optionally containing one or more parameter markers..
+ *
  * options
  *     An associative array containing statement options. You can use this parameter to request a
  *     scrollable cursor on database servers that support this functionality.
- * 
+ *
  *     cursor
  *         Passing the SQL_SCROLL_FORWARD_ONLY value requests a forward-only cursor for this SQL statement.
  *         This is the default type of cursor, and it is supported by all database servers. It is also
  *         much faster than a scrollable cursor.
- *         Passing the SQL_CURSOR_KEYSET_DRIVEN value requests a scrollable cursor for this SQL statement. 
+ *         Passing the SQL_CURSOR_KEYSET_DRIVEN value requests a scrollable cursor for this SQL statement.
  *         This type of cursor enables you to fetch rows non-sequentially from the database server.
- *         However, it is only supported by DB2 servers, and is much slower than forward-only cursors. 
- * 
+ *         However, it is only supported by DB2 servers, and is much slower than forward-only cursors.
+ *
  * ===Return Values
- * 
- * Returns a statement resource if the SQL statement was successfully parsed and prepared by the database server. Returns FALSE if the database server returned an error. 
- * You can determine which error was returned by calling IBM_DB.getErrormsg() or IBM_DB.getErrorState() with resource type connection. 
+ *
+ * Returns a statement resource if the SQL statement was successfully parsed and prepared by the database server. Returns FALSE if the database server returned an error.
+ * You can determine which error was returned by calling IBM_DB.getErrormsg() or IBM_DB.getErrorState() with resource type connection.
  */
 VALUE ibm_db_prepare(int argc, VALUE *argv, VALUE self)
 {
@@ -6140,7 +6140,7 @@ static int _ruby_ibm_db_bind_parameter_helper(stmt_handle *stmt_res, param_node 
        bindData_utf16 = _ruby_ibm_db_export_str_to_utf16( *bind_data );
        tmp_str = (SQLWCHAR *) RSTRING_PTR( bindData_utf16 );
        origlen = curr->ivalue = RSTRING_LEN( bindData_utf16 );
-     } 
+     }
 #else
       tmp_str = (SQLCHAR *) rb_str2cstr( *bind_data, (long*) &curr->ivalue );
       origlen = curr->ivalue;
@@ -6171,7 +6171,7 @@ static int _ruby_ibm_db_bind_parameter_helper(stmt_handle *stmt_res, param_node 
            /* graphic strings are 2 byte characters.
             * Not required for unicode support, as datatype is w equivalent of char.
            */
-           curr->ivalue = curr->ivalue * 2; 
+           curr->ivalue = curr->ivalue * 2;
           }
 #endif
         } else {
@@ -6290,7 +6290,7 @@ static int _ruby_ibm_db_bind_parameter_helper(stmt_handle *stmt_res, param_node 
           if ( curr->param_type == SQL_PARAM_INPUT_OUTPUT ) {
             curr->bind_indicator             =  origlen;
           } else {
-            if( curr->param_type == SQL_PARAM_INPUT && 
+            if( curr->param_type == SQL_PARAM_INPUT &&
                 (curr->data_type == SQL_GRAPHIC || curr->data_type == SQL_VARGRAPHIC)){
               curr->bind_indicator             =  origlen;
             } else {
@@ -6427,7 +6427,7 @@ static int _ruby_ibm_db_bind_param_list(stmt_handle *stmt_res, VALUE *error ) {
 
 /*  static int _ruby_ibm_db_execute_helper2(stmt_res, data, int bind_cmp_list, int bind_params, VALUE *error )
   */
-static int _ruby_ibm_db_execute_helper2(stmt_handle *stmt_res, VALUE *data, int bind_cmp_list, 
+static int _ruby_ibm_db_execute_helper2(stmt_handle *stmt_res, VALUE *data, int bind_cmp_list,
                                         int bind_params, VALUE *error )
 {
   int rc            =  SQL_SUCCESS;
@@ -6495,7 +6495,7 @@ static int _ruby_ibm_db_execute_helper2(stmt_handle *stmt_res, VALUE *data, int 
           return rc;
         }
 
-        curr = build_list( stmt_res, desc_param_args->param_no, desc_param_args->sql_data_type, 
+        curr = build_list( stmt_res, desc_param_args->param_no, desc_param_args->sql_data_type,
                     desc_param_args->sql_precision, desc_param_args->sql_scale, desc_param_args->sql_nullable );
 
         if(desc_param_args != NULL) {
@@ -6570,7 +6570,7 @@ void var_assign(char *name, VALUE value) {
   rb_dvar_asgn(rb_intern(name_id), value);
 #else
   /* so we do it the hard way */
-  ID inspect; 
+  ID inspect;
   char *expr, *statement;
   long expr_len;
 
@@ -6594,7 +6594,7 @@ void var_assign(char *name, VALUE value) {
 #endif
 }
 
-/* 
+/*
   static VALUE _ruby_ibm_db_desc_and_bind_param_list(stmt_bind_array *bind_array, VALUE *error)
 */
 static VALUE _ruby_ibm_db_desc_and_bind_param_list(stmt_bind_array *bind_array, VALUE *error ) {
@@ -6686,7 +6686,7 @@ static VALUE _ruby_ibm_db_execute_helper(stmt_bind_array *bind_array) {
     if( stmt_res != NULL && stmt_res->ruby_stmt_err_msg != NULL ) {
 #ifdef UNICODE_SUPPORT_VERSION
       *error = rb_str_concat( _ruby_ibm_db_export_char_to_utf8_rstr("Execute Failed due to: "),
-                 _ruby_ibm_db_export_sqlwchar_to_utf8_rstr( stmt_res->ruby_stmt_err_msg, 
+                 _ruby_ibm_db_export_sqlwchar_to_utf8_rstr( stmt_res->ruby_stmt_err_msg,
                               stmt_res->ruby_stmt_err_msg_len )
                );
 #else
@@ -6873,25 +6873,25 @@ static VALUE _ruby_ibm_db_execute_helper(stmt_bind_array *bind_array) {
 }
 /*
  * IBM_DB.execute --  Executes a prepared SQL statement
- * 
+ *
  * ===Description
  * bool IBM_DB.execute ( resource stmt [, array parameters] )
- * 
+ *
  * IBM_DB.execute() executes an SQL statement that was prepared by IBM_DB.prepare().
- * 
+ *
  * If the SQL statement returns a result set, for example, a SELECT statement or a CALL to a stored procedure that returns one or more result sets, you can retrieve a row as an array from the stmt resource using IBM_DB.fetch_assoc(), IBM_DB.fetch_both(), or IBM_DB.fetch_array(). Alternatively, you can use IBM_DB.fetch_row() to move the result set pointer to the next row and fetch a column at a time from that row with IBM_DB.result().
- * 
+ *
  * Refer to IBM_DB.prepare() for a brief discussion of the advantages of using IBM_DB.prepare() and IBM_DB.execute() rather than IBM_DB.exec().
- * 
+ *
  * ===Parameters
  * stmt
- *     A prepared statement returned from IBM_DB.prepare(). 
- * 
+ *     A prepared statement returned from IBM_DB.prepare().
+ *
  * parameters
- *     An array of input parameters matching any parameter markers contained in the prepared statement. 
- * 
+ *     An array of input parameters matching any parameter markers contained in the prepared statement.
+ *
  * ===Return Values
- * 
+ *
  * Returns TRUE on success or FALSE on failure.
  */
 VALUE ibm_db_execute(int argc, VALUE *argv, VALUE self)
@@ -6933,7 +6933,7 @@ VALUE ibm_db_execute(int argc, VALUE *argv, VALUE self)
     bind_array->error             =  &error;
 
     #ifdef UNICODE_SUPPORT_VERSION
-      ret_value = rb_thread_blocking_region( (void *)_ruby_ibm_db_execute_helper, bind_array,
+      ret_value = rb_thread_call_without_gvl( (void *)_ruby_ibm_db_execute_helper, bind_array,
                             (void *)_ruby_ibm_db_Statement_level_UBF, stmt_res );
     #else
       ret_value = _ruby_ibm_db_execute_helper( bind_array );
@@ -6981,7 +6981,7 @@ VALUE ibm_db_execute(int argc, VALUE *argv, VALUE self)
         switch(tmp_curr->param_type) {
           case SQL_PARAM_OUTPUT:
           case SQL_PARAM_INPUT_OUTPUT:
-            if( (tmp_curr->bind_indicator != SQL_NULL_DATA 
+            if( (tmp_curr->bind_indicator != SQL_NULL_DATA
                && tmp_curr->bind_indicator != SQL_NO_TOTAL )){
               switch (tmp_curr->data_type) {
                 case SQL_SMALLINT:
@@ -7058,26 +7058,26 @@ VALUE ibm_db_execute(int argc, VALUE *argv, VALUE self)
 
 /*
  * IBM_DB.conn_errormsg --  Returns the last connection error message and SQLCODE value
- * 
+ *
  * ===Description
  * string IBM_DB.conn_errormsg ( [resource connection] )
- * 
+ *
  * IBM_DB.conn_errormsg() returns an error message and SQLCODE value representing the reason
  * the last database connection attempt failed. As IBM_DB.connect() returns FALSE in the event
  * of a failed connection attempt, do not pass any parameters to IBM_DB.conn_errormsg() to retrieve
  * the associated error message and SQLCODE value.
- * 
+ *
  * If, however, the connection was successful but becomes invalid over time, you can pass the connection
  * parameter to retrieve the associated error message and SQLCODE value for a specific connection.
  * ===Parameters
- * 
+ *
  * connection
  *     A connection resource associated with a connection that initially succeeded, but which over time
- * became invalid. 
- * 
+ * became invalid.
+ *
  * ===Return Values
- * 
- * Returns a string containing the error message and SQLCODE value resulting from a failed connection attempt. If there is no error associated with the last connection attempt, IBM_DB.conn_errormsg() returns an empty string. 
+ *
+ * Returns a string containing the error message and SQLCODE value resulting from a failed connection attempt. If there is no error associated with the last connection attempt, IBM_DB.conn_errormsg() returns an empty string.
  *
  * ===Deprecated
  * Use getErrormsg
@@ -7137,22 +7137,22 @@ VALUE ibm_db_conn_errormsg(int argc, VALUE *argv, VALUE self)
 
 /*
  * IBM_DB.stmt_errormsg --  Returns a string containing the last SQL statement error message
- * 
+ *
  * ===Description
  * string IBM_DB.stmt_errormsg ( [resource stmt] )
- * 
+ *
  * Returns a string containing the last SQL statement error message.
- * 
+ *
  * If you do not pass a statement resource as an argument to IBM_DB.stmt_errormsg(), the driver returns the error message associated with the last attempt to return a statement resource, for example, from IBM_DB.prepare() or IBM_DB.exec().
- * 
+ *
  * ===Parameters
- * 
+ *
  * stmt
- *     A valid statement resource. 
- * 
+ *     A valid statement resource.
+ *
  * ===Return Values
- * 
- * Returns a string containing the error message and SQLCODE value for the last error that occurred issuing an SQL statement. 
+ *
+ * Returns a string containing the error message and SQLCODE value for the last error that occurred issuing an SQL statement.
  *
  * ===Deprecated
  * Use getErrormsg
@@ -7180,7 +7180,7 @@ VALUE ibm_db_stmt_errormsg(int argc, VALUE *argv, VALUE self)
     memset(return_str, '\0', DB2_MAX_ERR_MSG_LEN+1);
 #endif
 
-    _ruby_ibm_db_check_sql_errors(stmt_res, DB_STMT, stmt_res->hstmt, SQL_HANDLE_STMT, -1, 0, 
+    _ruby_ibm_db_check_sql_errors(stmt_res, DB_STMT, stmt_res->hstmt, SQL_HANDLE_STMT, -1, 0,
              return_str, &return_str_len, DB_ERRMSG, stmt_res->errormsg_recno_tracker, 1);
 
     if(stmt_res->errormsg_recno_tracker - stmt_res->error_recno_tracker >= 1)
@@ -7210,27 +7210,27 @@ VALUE ibm_db_stmt_errormsg(int argc, VALUE *argv, VALUE self)
  * IBM_DB.conn_error --  Returns a string containing the SQLSTATE returned by the last connection attempt
  * ===Description
  * string IBM_DB.conn_error ( [resource connection] )
- * 
+ *
  * IBM_DB.conn_error() returns an SQLSTATE value representing the reason the last attempt to connect
  * to a database failed. As IBM_DB.connect() returns FALSE in the event of a failed connection attempt,
  * you do not pass any parameters to IBM_DB.conn_error() to retrieve the SQLSTATE value.
- * 
+ *
  * If, however, the connection was successful but becomes invalid over time, you can pass the connection
  * parameter to retrieve the SQLSTATE value for a specific connection.
- * 
+ *
  * To learn what the SQLSTATE value means, you can issue the following command at a DB2 Command Line
  * Processor prompt: db2 '? sqlstate-value'. You can also call IBM_DB.conn_errormsg() to retrieve
  * an explicit error message and the associated SQLCODE value.
- * 
+ *
  * ===Parameters
- * 
+ *
  * connection
  *     A connection resource associated with a connection that initially succeeded, but which over time
- * became invalid. 
- * 
+ * became invalid.
+ *
  * ===Return Values
- * 
- * Returns the SQLSTATE value resulting from a failed connection attempt. 
+ *
+ * Returns the SQLSTATE value resulting from a failed connection attempt.
  * Returns an empty string if there is no error associated with the last connection attempt.
  *
  * ===Deprecated
@@ -7264,7 +7264,7 @@ VALUE ibm_db_conn_error(int argc, VALUE *argv, VALUE self)
     memset(return_str, '\0', SQL_SQLSTATE_SIZE + 1);
 #endif
 
-    _ruby_ibm_db_check_sql_errors(conn_res, DB_CONN, conn_res->hdbc, SQL_HANDLE_DBC, -1, 0, 
+    _ruby_ibm_db_check_sql_errors(conn_res, DB_CONN, conn_res->hdbc, SQL_HANDLE_DBC, -1, 0,
               return_str, &return_str_len, DB_ERR_STATE, conn_res->error_recno_tracker, 1);
 
     if (conn_res->error_recno_tracker - conn_res->errormsg_recno_tracker >= 1) {
@@ -7295,23 +7295,23 @@ VALUE ibm_db_conn_error(int argc, VALUE *argv, VALUE self)
 
 /*
  * IBM_DB.stmt_error --  Returns a string containing the SQLSTATE returned by an SQL statement
- * 
+ *
  * ===Description
  * string IBM_DB.stmt_error ( [resource stmt] )
- * 
+ *
  * Returns a string containing the SQLSTATE value returned by an SQL statement.
- * 
+ *
  * If you do not pass a statement resource as an argument to IBM_DB.stmt_error(), the driver returns the SQLSTATE value associated with the last attempt to return a statement resource, for example, from IBM_DB.prepare() or IBM_DB.exec().
- * 
+ *
  * To learn what the SQLSTATE value means, you can issue the following command at a DB2 Command Line Processor prompt: db2 '? sqlstate-value'. You can also call IBM_DB.stmt_errormsg() to retrieve an explicit error message and the associated SQLCODE value.
- * 
+ *
  * ===Parameters
- * 
+ *
  * stmt
- *     A valid statement resource. 
- * 
+ *     A valid statement resource.
+ *
  * ===Return Values
- * 
+ *
  * Returns a string containing an SQLSTATE value.
  *
  * ===Deprecated
@@ -7340,7 +7340,7 @@ VALUE ibm_db_stmt_error(int argc, VALUE *argv, VALUE self)
     memset(return_str, '\0', SQL_SQLSTATE_SIZE + 1);
 #endif
 
-    _ruby_ibm_db_check_sql_errors(stmt_res, DB_STMT, stmt_res->hstmt, SQL_HANDLE_STMT, -1, 0, 
+    _ruby_ibm_db_check_sql_errors(stmt_res, DB_STMT, stmt_res->hstmt, SQL_HANDLE_STMT, -1, 0,
                  return_str, &return_str_len, DB_ERR_STATE, stmt_res->error_recno_tracker, 1 );
 
     if (stmt_res->error_recno_tracker - stmt_res->errormsg_recno_tracker >= 1) {
@@ -7359,8 +7359,8 @@ VALUE ibm_db_stmt_error(int argc, VALUE *argv, VALUE self)
     return ret_val;
   } else {
 #ifdef UNICODE_SUPPORT_VERSION
-    return _ruby_ibm_db_export_sqlwchar_to_utf8_rstr( IBM_DB_G(__ruby_stmt_err_state), 
-             SQL_SQLSTATE_SIZE * sizeof(SQLWCHAR) 
+    return _ruby_ibm_db_export_sqlwchar_to_utf8_rstr( IBM_DB_G(__ruby_stmt_err_state),
+             SQL_SQLSTATE_SIZE * sizeof(SQLWCHAR)
            );
 #else
     return rb_str_new2(IBM_DB_G(__ruby_stmt_err_state));
@@ -7371,14 +7371,14 @@ VALUE ibm_db_stmt_error(int argc, VALUE *argv, VALUE self)
 
 /*
  * IBM_DB.getErrormsg --  Returns a string containing the last SQL statement error message
- * 
+ *
  * ===Description
  * string IBM_DB.getErrormsg ( resource conn_or_stmt, value resourceType)
- * 
+ *
  * Returns a string containing the last diagnostic error message.
- * 
+ *
  * ===Parameters
- * 
+ *
  * conn_or_stmt
  *     A valid connection or statement resource.
  *
@@ -7390,8 +7390,8 @@ VALUE ibm_db_stmt_error(int argc, VALUE *argv, VALUE self)
  *     1 = Connection, non - 1 = Statement
  *
  * ===Return Values
- * 
- * Returns a string containing the error message and SQLCODE value for the last error that occurred. 
+ *
+ * Returns a string containing the error message and SQLCODE value for the last error that occurred.
  *
  */
 VALUE ibm_db_getErrormsg(int argc, VALUE *argv, VALUE self)
@@ -7483,7 +7483,7 @@ VALUE ibm_db_getErrormsg(int argc, VALUE *argv, VALUE self)
         memset(return_str, '\0', DB2_MAX_ERR_MSG_LEN + 1 );
 #endif
 
-        _ruby_ibm_db_check_sql_errors(stmt_res, DB_STMT, stmt_res->hstmt, SQL_HANDLE_STMT, -1, 0, 
+        _ruby_ibm_db_check_sql_errors(stmt_res, DB_STMT, stmt_res->hstmt, SQL_HANDLE_STMT, -1, 0,
                       return_str, &return_str_len, DB_ERRMSG, stmt_res->errormsg_recno_tracker, 1);
 
         if(stmt_res->errormsg_recno_tracker - stmt_res->error_recno_tracker >= 1) {
@@ -7512,14 +7512,14 @@ VALUE ibm_db_getErrormsg(int argc, VALUE *argv, VALUE self)
 
 /*
  * IBM_DB.getErrorstate --  Returns a string containing the SQLSTATE of the last error condition
- * 
+ *
  * ===Description
  * string IBM_DB.getErrorstate ( resource conn_or_stmt, value resourceType,  value errorType)
- * 
+ *
  * Returns a string containing the last error's SQLSTATE.
- * 
+ *
  * ===Parameters
- * 
+ *
  * conn_or_stmt
  *     A valid connection or statement resource.
  *
@@ -7532,8 +7532,8 @@ VALUE ibm_db_getErrormsg(int argc, VALUE *argv, VALUE self)
  *     1 = Connection, non - 1 = Statement
  *
  * ===Return Values
- * 
- * Returns a string containing the error message and SQLCODE value for the last error that occurred issuing an SQL statement. 
+ *
+ * Returns a string containing the error message and SQLCODE value for the last error that occurred issuing an SQL statement.
  *
  */
 VALUE ibm_db_getErrorstate(int argc, VALUE *argv, VALUE self)
@@ -7568,7 +7568,7 @@ VALUE ibm_db_getErrorstate(int argc, VALUE *argv, VALUE self)
           if( conn_res->ruby_error_state != NULL ) {
 #ifdef UNICODE_SUPPORT_VERSION
             return_value  =  _ruby_ibm_db_export_sqlwchar_to_utf8_rstr( conn_res->ruby_error_state,
-                                SQL_SQLSTATE_SIZE * sizeof(SQLWCHAR) 
+                                SQL_SQLSTATE_SIZE * sizeof(SQLWCHAR)
                              );
 #else
             return_value  =  rb_str_new2( conn_res->ruby_error_state );
@@ -7580,7 +7580,7 @@ VALUE ibm_db_getErrorstate(int argc, VALUE *argv, VALUE self)
 
         if( conn_res->error_recno_tracker == 1 && conn_res->ruby_error_state != NULL ) {
 #ifdef UNICODE_SUPPORT_VERSION
-          return_value  =  _ruby_ibm_db_export_sqlwchar_to_utf8_rstr( conn_res->ruby_error_state, 
+          return_value  =  _ruby_ibm_db_export_sqlwchar_to_utf8_rstr( conn_res->ruby_error_state,
                               SQL_SQLSTATE_SIZE * sizeof(SQLWCHAR)
                            );
 #else
@@ -7596,7 +7596,7 @@ VALUE ibm_db_getErrorstate(int argc, VALUE *argv, VALUE self)
           memset(return_str, '\0', SQL_SQLSTATE_SIZE + 1 );
 #endif
 
-          _ruby_ibm_db_check_sql_errors(conn_res, DB_CONN, conn_res->hdbc, SQL_HANDLE_DBC, -1, 0, return_str, 
+          _ruby_ibm_db_check_sql_errors(conn_res, DB_CONN, conn_res->hdbc, SQL_HANDLE_DBC, -1, 0, return_str,
                        &return_str_len, DB_ERR_STATE, conn_res->error_recno_tracker, 1 );
 
           if(conn_res->error_recno_tracker - conn_res->errormsg_recno_tracker >= 1) {
@@ -7617,8 +7617,8 @@ VALUE ibm_db_getErrorstate(int argc, VALUE *argv, VALUE self)
 
       if( stmt_res->error_recno_tracker == 1 && stmt_res->ruby_stmt_err_state != NULL ) {
 #ifdef UNICODE_SUPPORT_VERSION
-        return_value  =  _ruby_ibm_db_export_sqlwchar_to_utf8_rstr( stmt_res->ruby_stmt_err_state, 
-                            SQL_SQLSTATE_SIZE * sizeof(SQLWCHAR) 
+        return_value  =  _ruby_ibm_db_export_sqlwchar_to_utf8_rstr( stmt_res->ruby_stmt_err_state,
+                            SQL_SQLSTATE_SIZE * sizeof(SQLWCHAR)
                          );
 #else
         return_value  =  rb_str_new2( stmt_res->ruby_stmt_err_state );
@@ -7633,7 +7633,7 @@ VALUE ibm_db_getErrorstate(int argc, VALUE *argv, VALUE self)
         memset(return_str, '\0', SQL_SQLSTATE_SIZE + 1 );
 #endif
 
-        _ruby_ibm_db_check_sql_errors(stmt_res, DB_STMT, stmt_res->hstmt, SQL_HANDLE_STMT, -1, 0, 
+        _ruby_ibm_db_check_sql_errors(stmt_res, DB_STMT, stmt_res->hstmt, SQL_HANDLE_STMT, -1, 0,
                       return_str, &return_str_len, DB_ERR_STATE, stmt_res->error_recno_tracker, 1);
 
         if(stmt_res->error_recno_tracker - stmt_res->errormsg_recno_tracker >= 1) {
@@ -7663,18 +7663,18 @@ VALUE ibm_db_getErrorstate(int argc, VALUE *argv, VALUE self)
 
 /*
  * IBM_DB.next_result --  Requests the next result set from a stored procedure
- * 
+ *
  * ===Description
  * resource IBM_DB.next_result ( resource stmt )
- * 
+ *
  * A stored procedure can return zero or more result sets. While you handle the first result set in exactly the same way you would handle the results returned by a simple SELECT statement, to fetch the second and subsequent result sets from a stored procedure you must call the IBM_DB.next_result() function and return the result to a uniquely named Ruby variable.
- * 
+ *
  * ===Parameters
  * stmt
- *     A prepared statement returned from IBM_DB.exec() or IBM_DB.execute(). 
- * 
+ *     A prepared statement returned from IBM_DB.exec() or IBM_DB.execute().
+ *
  * ===Return Values
- * 
+ *
  * Returns a new statement resource containing the next result set if the stored procedure returned another result set. Returns FALSE if the stored procedure did not return another result set.
  */
 VALUE ibm_db_next_result(int argc, VALUE *argv, VALUE self)
@@ -7705,7 +7705,7 @@ VALUE ibm_db_next_result(int argc, VALUE *argv, VALUE self)
       }
       memset( stmt_res->ruby_stmt_err_msg, '\0', DB2_MAX_ERR_MSG_LEN+1 );
 
-      _ruby_ibm_db_check_sql_errors( stmt_res , DB_STMT, stmt_res->hdbc, SQL_HANDLE_DBC, rc, 0, 
+      _ruby_ibm_db_check_sql_errors( stmt_res , DB_STMT, stmt_res->hdbc, SQL_HANDLE_DBC, rc, 0,
                 stmt_res->ruby_stmt_err_msg, &(stmt_res->ruby_stmt_err_msg_len), 1, 1, 1 );
 
       ret_value = Qfalse;
@@ -7718,7 +7718,7 @@ VALUE ibm_db_next_result(int argc, VALUE *argv, VALUE self)
       nextresultparams->new_hstmt =  &new_hstmt;
 
       #ifdef UNICODE_SUPPORT_VERSION
-        rc = rb_thread_blocking_region( (void *)_ruby_ibm_db_SQLNextResult_helper, nextresultparams,
+        rc = rb_thread_call_without_gvl( (void *)_ruby_ibm_db_SQLNextResult_helper, nextresultparams,
                        (void *)_ruby_ibm_db_Statement_level_UBF, stmt_res );
       #else
         rc = _ruby_ibm_db_SQLNextResult_helper( nextresultparams );
@@ -7774,23 +7774,23 @@ VALUE ibm_db_next_result(int argc, VALUE *argv, VALUE self)
 
 /*
  * IBM_DB.num_fields --  Returns the number of fields contained in a result set
- * 
+ *
  * ===Description
  * int IBM_DB.num_fields ( resource stmt )
- * 
+ *
  * Returns the number of fields contained in a result set. This is most useful for handling the
  * result sets returned by dynamically generated queries, or for result sets returned by stored procedures,
  * where your application cannot otherwise know how to retrieve and use the results.
- * 
+ *
  * ===Parameters
- * 
+ *
  * stmt
- *     A valid statement resource containing a result set. 
- * 
+ *     A valid statement resource containing a result set.
+ *
  * ===Return Values
- * 
+ *
  * Returns an integer value representing the number of fields in the result set associated with the
- * specified statement resource. Returns FALSE in case of any failures. 
+ * specified statement resource. Returns FALSE in case of any failures.
  */
 VALUE ibm_db_num_fields(int argc, VALUE *argv, VALUE self)
 {
@@ -7817,7 +7817,7 @@ VALUE ibm_db_num_fields(int argc, VALUE *argv, VALUE self)
     result_cols_args->count     =  0;
 
     #ifdef UNICODE_SUPPORT_VERSION
-      rc = rb_thread_blocking_region( (void *)_ruby_ibm_db_SQLNumResultCols_helper, result_cols_args,
+      rc = rb_thread_call_without_gvl( (void *)_ruby_ibm_db_SQLNumResultCols_helper, result_cols_args,
                      (void *)_ruby_ibm_db_Statement_level_UBF, stmt_res );
     #else
       rc = _ruby_ibm_db_SQLNumResultCols_helper( result_cols_args );
@@ -7854,12 +7854,12 @@ VALUE ibm_db_num_fields(int argc, VALUE *argv, VALUE self)
 
 /*
  * IBM_DB.num_rows --  Returns the number of rows affected by an SQL statement
- * 
+ *
  * ===Description
  * int IBM_DB.num_rows ( resource stmt )
- * 
+ *
  * Returns the number of rows deleted, inserted, or updated by an SQL statement.
- * 
+ *
  * To determine the number of rows that will be returned by a SELECT statement, issue SELECT COUNT(*)
  * with the same predicates as your intended SELECT statement and retrieve the value.
  * If your application logic checks the number of rows returned by a SELECT statement and branches
@@ -7870,18 +7870,18 @@ VALUE ibm_db_num_fields(int argc, VALUE *argv, VALUE self)
  * <b>Note:</b> If you issue a SELECT statement using a scrollable cursor, IBM_DB.num_rows() returns the
  * number of rows returned by the SELECT statement. However, the overhead associated with scrollable cursors
  * significantly degrades the performance of your application, so if this is the only reason you are
- * considering using scrollable cursors, you should use a forward-only cursor and either 
+ * considering using scrollable cursors, you should use a forward-only cursor and either
  * call SELECT COUNT(*) or rely on the boolean return value of the fetch functions to achieve the
- * equivalent functionality with much better performance. 
- * 
+ * equivalent functionality with much better performance.
+ *
  * ===Parameters
- * 
+ *
  * stmt
- *     A valid stmt resource containing a result set. 
- * 
+ *     A valid stmt resource containing a result set.
+ *
  * ===Return Values
- * 
- * Returns the number of rows affected by the last SQL statement issued by the specified statement handle or 
+ *
+ * Returns the number of rows affected by the last SQL statement issued by the specified statement handle or
  * Returns FALSE in case of failure.
  */
 VALUE ibm_db_num_rows(int argc, VALUE *argv, VALUE self)
@@ -7910,7 +7910,7 @@ VALUE ibm_db_num_rows(int argc, VALUE *argv, VALUE self)
     row_count_args->count     =  0;
 
     #ifdef UNICODE_SUPPORT_VERSION
-      rc = rb_thread_blocking_region( (void *)_ruby_ibm_db_SQLRowCount_helper, row_count_args,
+      rc = rb_thread_call_without_gvl( (void *)_ruby_ibm_db_SQLRowCount_helper, row_count_args,
                      (void *)_ruby_ibm_db_Statement_level_UBF, stmt_res );
     #else
       rc = _ruby_ibm_db_SQLRowCount_helper( row_count_args );
@@ -7966,7 +7966,7 @@ static int _ruby_ibm_db_get_column_by_name(stmt_handle *stmt_res, VALUE column, 
     if ( release_gil == 1 ) {
 
       #ifdef UNICODE_SUPPORT_VERSION
-        rc = rb_thread_blocking_region( (void *)_ruby_ibm_db_get_result_set_info, stmt_res,
+        rc = rb_thread_call_without_gvl( (void *)_ruby_ibm_db_get_result_set_info, stmt_res,
                       (void *)_ruby_ibm_db_Statement_level_UBF, stmt_res );
       #else
         rc = _ruby_ibm_db_get_result_set_info( stmt_res );
@@ -8023,23 +8023,23 @@ static int _ruby_ibm_db_get_column_by_name(stmt_handle *stmt_res, VALUE column, 
 
 /*
  * IBM_DB.field_name --  Returns the name of the column in the result set
- * 
+ *
  * ===Description
  * string IBM_DB.field_name ( resource stmt, mixed column )
- * 
+ *
  * Returns the name of the specified column in the result set.
- * 
+ *
  * ===Parameters
- * 
+ *
  * stmt
- *     Specifies a statement resource containing a result set. 
- * 
+ *     Specifies a statement resource containing a result set.
+ *
  * column
- *     Specifies the column in the result set. This can either be an integer representing the 0-indexed position of the column, or a string containing the name of the column. 
- * 
+ *     Specifies the column in the result set. This can either be an integer representing the 0-indexed position of the column, or a string containing the name of the column.
+ *
  * ===Return Values
- * 
- * Returns a string containing the name of the specified column. If the specified column does not exist in the result set, IBM_DB.field_name() returns FALSE. 
+ *
+ * Returns a string containing the name of the specified column. If the specified column does not exist in the result set, IBM_DB.field_name() returns FALSE.
  */
 VALUE ibm_db_field_name(int argc, VALUE *argv, VALUE self)
 {
@@ -8073,24 +8073,24 @@ VALUE ibm_db_field_name(int argc, VALUE *argv, VALUE self)
 
 /*
  * IBM_DB.field_display_size --  Returns the maximum number of bytes required to display a column
- * 
+ *
  * ===Description
  * int IBM_DB.field_display_size ( resource stmt, mixed column )
- * 
+ *
  * Returns the maximum number of bytes required to display a column in a result set.
- * 
+ *
  * ===Parameters
  * stmt
- *     Specifies a statement resource containing a result set. 
- * 
+ *     Specifies a statement resource containing a result set.
+ *
  * column
  *     Specifies the column in the result set. This can either be an integer representing the
- *     0-indexed position of the column, or a string containing the name of the column. 
- * 
+ *     0-indexed position of the column, or a string containing the name of the column.
+ *
  * ===Return Values
- * 
+ *
  * Returns an integer value with the maximum number of bytes required to display the specified column.
- * If the column does not exist in the result set, IBM_DB.field_display_size() returns FALSE. 
+ * If the column does not exist in the result set, IBM_DB.field_display_size() returns FALSE.
  */
 VALUE ibm_db_field_display_size(int argc, VALUE *argv, VALUE self)
 {
@@ -8129,7 +8129,7 @@ VALUE ibm_db_field_display_size(int argc, VALUE *argv, VALUE self)
     colattr_args->FieldIdentifier =  SQL_DESC_DISPLAY_SIZE;
 
     #ifdef UNICODE_SUPPORT_VERSION
-      rc = rb_thread_blocking_region( (void *)_ruby_ibm_db_SQLColAttributes_helper, colattr_args,
+      rc = rb_thread_call_without_gvl( (void *)_ruby_ibm_db_SQLColAttributes_helper, colattr_args,
                      (void *)_ruby_ibm_db_Statement_level_UBF, stmt_res );
     #else
       rc = _ruby_ibm_db_SQLColAttributes_helper( colattr_args );
@@ -8155,25 +8155,25 @@ VALUE ibm_db_field_display_size(int argc, VALUE *argv, VALUE self)
 
 /*
  * IBM_DB.field_num --  Returns the position of the named column in a result set
- * 
+ *
  * ===Description
  * int IBM_DB.field_num ( resource stmt, mixed column )
- * 
+ *
  * Returns the position of the named column in a result set.
- * 
+ *
  * ===Parameters
- * 
+ *
  * stmt
- *     Specifies a statement resource containing a result set. 
- * 
+ *     Specifies a statement resource containing a result set.
+ *
  * column
  *     Specifies the column in the result set. This can either be an integer representing the
- *     0-indexed position of the column, or a string containing the name of the column. 
- * 
+ *     0-indexed position of the column, or a string containing the name of the column.
+ *
  * ===Return Values
- * 
- * Returns an integer containing the 0-indexed position of the named column in the result set. 
- * If the specified column does not exist in the result set, IBM_DB.field_num() returns FALSE. 
+ *
+ * Returns an integer containing the 0-indexed position of the named column in the result set.
+ * If the specified column does not exist in the result set, IBM_DB.field_num() returns FALSE.
  */
 VALUE ibm_db_field_num(int argc, VALUE *argv, VALUE self)
 {
@@ -8203,25 +8203,25 @@ VALUE ibm_db_field_num(int argc, VALUE *argv, VALUE self)
 
 /*
  * IBM_DB.field_precision --  Returns the precision of the indicated column in a result set
- * 
+ *
  * ===Description
  * int IBM_DB.field_precision ( resource stmt, mixed column )
- * 
+ *
  * Returns the precision of the indicated column in a result set.
- * 
+ *
  * ===Parameters
- * 
+ *
  * stmt
- *     Specifies a statement resource containing a result set. 
- * 
+ *     Specifies a statement resource containing a result set.
+ *
  * column
  *     Specifies the column in the result set. This can either be an integer representing the
- *     0-indexed position of the column, or a string containing the name of the column. 
- * 
+ *     0-indexed position of the column, or a string containing the name of the column.
+ *
  * ===Return Values
- * 
+ *
  * Returns an integer containing the precision of the specified column. If the specified column
- * does not exist in the result set, IBM_DB.field_precision() returns FALSE. 
+ * does not exist in the result set, IBM_DB.field_precision() returns FALSE.
  */
 VALUE ibm_db_field_precision(int argc, VALUE *argv, VALUE self)
 {
@@ -8252,24 +8252,24 @@ VALUE ibm_db_field_precision(int argc, VALUE *argv, VALUE self)
 
 /*
  * IBM_DB.field_scale --  Returns the scale of the indicated column in a result set
- * 
+ *
  * ===Description
  * int IBM_DB.field_scale ( resource stmt, mixed column )
- * 
+ *
  * Returns the scale of the indicated column in a result set.
- * 
+ *
  * ===Parameters
  * stmt
- *     Specifies a statement resource containing a result set. 
- * 
+ *     Specifies a statement resource containing a result set.
+ *
  * column
  *     Specifies the column in the result set. This can either be an integer representing the
- *     0-indexed position of the column, or a string containing the name of the column. 
- * 
+ *     0-indexed position of the column, or a string containing the name of the column.
+ *
  * ===Return Values
- * 
+ *
  * Returns an integer containing the scale of the specified column. If the specified column
- * does not exist in the result set, IBM_DB.field_scale() returns FALSE. 
+ * does not exist in the result set, IBM_DB.field_scale() returns FALSE.
  */
 VALUE ibm_db_field_scale(int argc, VALUE *argv, VALUE self)
 {
@@ -8299,24 +8299,24 @@ VALUE ibm_db_field_scale(int argc, VALUE *argv, VALUE self)
 
 /*
  * IBM_DB.field_type --  Returns the data type of the indicated column in a result set
- * 
+ *
  * ===Description
  * string IBM_DB.field_type ( resource stmt, mixed column )
- * 
+ *
  * Returns the data type of the indicated column in a result set.
- * 
+ *
  * ===Parameters
  * stmt
- *     Specifies a statement resource containing a result set. 
- * 
+ *     Specifies a statement resource containing a result set.
+ *
  * column
  *     Specifies the column in the result set. This can either be an integer representing the
- *     0-indexed position of the column, or a string containing the name of the column. 
- * 
+ *     0-indexed position of the column, or a string containing the name of the column.
+ *
  * ===Return Values
- * 
+ *
  * Returns a string containing the defined data type of the specified column. If the specified column
- * does not exist in the result set, IBM_DB.field_type() returns FALSE. 
+ * does not exist in the result set, IBM_DB.field_type() returns FALSE.
  */
 VALUE ibm_db_field_type(int argc, VALUE *argv, VALUE self)
 {
@@ -8388,28 +8388,28 @@ VALUE ibm_db_field_type(int argc, VALUE *argv, VALUE self)
 
 /*
  * IBM_DB.field_width --  Returns the width of the current value of the indicated column in a result set
- * 
+ *
  * ===Description
  * int IBM_DB.field_width ( resource stmt, mixed column )
- * 
+ *
  * Returns the width of the current value of the indicated column in a result set. This is the maximum
  * width of the column for a fixed-length data type, or the actual width of the column for a
  * variable-length data type.
- * 
+ *
  * ===Parameters
- * 
+ *
  * stmt
- *     Specifies a statement resource containing a result set. 
- * 
+ *     Specifies a statement resource containing a result set.
+ *
  * column
  *     Specifies the column in the result set. This can either be an integer representing the
- *     0-indexed position of the column, or a string containing the name of the column. 
- * 
+ *     0-indexed position of the column, or a string containing the name of the column.
+ *
  * ===Return Values
- * 
+ *
  * Returns an integer containing the width of the specified character or binary data type column
  * in a result set. If the specified column does not exist in the result set, IBM_DB.field_width()
- * returns FALSE. 
+ * returns FALSE.
  */
 VALUE ibm_db_field_width(int argc, VALUE *argv, VALUE self)
 {
@@ -8449,7 +8449,7 @@ VALUE ibm_db_field_width(int argc, VALUE *argv, VALUE self)
     colattr_args->FieldIdentifier  =  SQL_DESC_LENGTH;
 
     #ifdef UNICODE_SUPPORT_VERSION
-      rc = rb_thread_blocking_region( (void *)_ruby_ibm_db_SQLColAttributes_helper, colattr_args,
+      rc = rb_thread_call_without_gvl( (void *)_ruby_ibm_db_SQLColAttributes_helper, colattr_args,
                      (void *)_ruby_ibm_db_Statement_level_UBF, stmt_res );
     #else
       rc = _ruby_ibm_db_SQLColAttributes_helper( colattr_args );
@@ -8475,19 +8475,19 @@ VALUE ibm_db_field_width(int argc, VALUE *argv, VALUE self)
 
 /*
  * IBM_DB.cursor_type --  Returns the cursor type used by a statement resource
- * 
+ *
  * ===Description
  * int IBM_DB.cursor_type ( resource stmt )
- * 
+ *
  * Returns the cursor type used by a statement resource. Use this to determine if you are working with a forward-only cursor or scrollable cursor.
- * 
+ *
  * ===Parameters
  * stmt
- *     A valid statement resource. 
- * 
+ *     A valid statement resource.
+ *
  * ===Return Values
- * 
- * Returns either SQL_SCROLL_FORWARD_ONLY if the statement resource uses a forward-only cursor or SQL_CURSOR_KEYSET_DRIVEN if the statement resource uses a scrollable cursor. 
+ *
+ * Returns either SQL_SCROLL_FORWARD_ONLY if the statement resource uses a forward-only cursor or SQL_CURSOR_KEYSET_DRIVEN if the statement resource uses a scrollable cursor.
  */
 VALUE ibm_db_cursor_type(int argc, VALUE *argv, VALUE self)
 {
@@ -8509,26 +8509,26 @@ VALUE ibm_db_cursor_type(int argc, VALUE *argv, VALUE self)
 
 /*
  * IBM_DB.rollback --  Rolls back a transaction
- * 
+ *
  * ===Description
  * bool IBM_DB.rollback ( resource connection )
- * 
+ *
  * Rolls back an in-progress transaction on the specified connection resource and begins a new transaction. Ruby
  * applications normally default to AUTOCOMMIT mode, so IBM_DB.rollback() normally has no effect unless AUTOCOMMIT
  * has been turned off for the connection resource.
  *
  * <b>Note:</b> If the specified connection resource is a persistent connection, all transactions in progress for all
  * applications using that persistent connection will be rolled back. For this reason, persistent connections are not
- * recommended for use in applications that require transactions. 
- * 
+ * recommended for use in applications that require transactions.
+ *
  * ===Parameters
- * 
+ *
  * connection
- *     A valid database connection resource variable as returned from IBM_DB.connect() or IBM_DB.pconnect(). 
- * 
+ *     A valid database connection resource variable as returned from IBM_DB.connect() or IBM_DB.pconnect().
+ *
  * ===Return Values
- * 
- * Returns TRUE on success or FALSE on failure. 
+ *
+ * Returns TRUE on success or FALSE on failure.
  */
 VALUE ibm_db_rollback(int argc, VALUE *argv, VALUE self)
 {
@@ -8555,7 +8555,7 @@ VALUE ibm_db_rollback(int argc, VALUE *argv, VALUE self)
     end_X_args->completionType  =  SQL_ROLLBACK;    /*Remeber you are Rollingback the transaction*/
 
     #ifdef UNICODE_SUPPORT_VERSION
-      rc = rb_thread_blocking_region( (void *)_ruby_ibm_db_SQLEndTran, end_X_args,
+      rc = rb_thread_call_without_gvl( (void *)_ruby_ibm_db_SQLEndTran, end_X_args,
                      (void *)_ruby_ibm_db_Connection_level_UBF, NULL);
     #else
       rc = _ruby_ibm_db_SQLEndTran( end_X_args );
@@ -8580,23 +8580,23 @@ VALUE ibm_db_rollback(int argc, VALUE *argv, VALUE self)
 }
 /*  */
 
-/*  
+/*
  * IBM_DB.free_stmt --  Frees the indicated statement handle and any resources associated with it
- * 
+ *
  * ===Description
  * bool IBM_DB.free_stmt ( resource stmt )
- * 
+ *
  * Frees the system and database resources that are associated with a statement resource. These resources
  * are freed implicitly when a script finishes, but you can call IBM_DB.free_stmt() to explicitly free
  * the statement resources before the end of the script.
  *
  * ===Parameters
  * stmt
- *     A valid statement resource. 
- * 
+ *     A valid statement resource.
+ *
  * ===Return Values
- * 
- * Returns TRUE on success or FALSE on failure. 
+ *
+ * Returns TRUE on success or FALSE on failure.
  *
  */
 VALUE ibm_db_free_stmt(int argc, VALUE *argv, VALUE self)
@@ -8665,7 +8665,7 @@ static RETCODE _ruby_ibm_db_get_length(stmt_handle* stmt_res, SQLUSMALLINT col_n
     }
     memset( stmt_res->ruby_stmt_err_msg, '\0', DB2_MAX_ERR_MSG_LEN+1 );
 
-    _ruby_ibm_db_check_sql_errors( stmt_res , DB_STMT, stmt_res->hdbc, SQL_HANDLE_DBC, rc, 0, 
+    _ruby_ibm_db_check_sql_errors( stmt_res , DB_STMT, stmt_res->hdbc, SQL_HANDLE_DBC, rc, 0,
               stmt_res->ruby_stmt_err_msg, &(stmt_res->ruby_stmt_err_msg_len), 1, 1, 0 );
     return SQL_ERROR;
   }
@@ -8695,7 +8695,7 @@ static RETCODE _ruby_ibm_db_get_length(stmt_handle* stmt_res, SQLUSMALLINT col_n
   return rc;
 }
 /* }}} */
-     
+
 /* {{{ static RETCODE _ruby_ibm_db_get_data2(stmt_handle *stmt_res, int col_num, short ctype, void *buff, int in_length, SQLINTEGER *out_length) */
 static RETCODE _ruby_ibm_db_get_data2(stmt_handle *stmt_res, SQLUSMALLINT col_num, SQLSMALLINT ctype, SQLPOINTER buff, SQLLEN read_length, SQLLEN buff_length, SQLINTEGER *out_length)
 {
@@ -8711,7 +8711,7 @@ static RETCODE _ruby_ibm_db_get_data2(stmt_handle *stmt_res, SQLUSMALLINT col_nu
     }
     memset( stmt_res->ruby_stmt_err_msg, '\0', DB2_MAX_ERR_MSG_LEN+1 );
 
-    _ruby_ibm_db_check_sql_errors( stmt_res , DB_STMT, stmt_res->hdbc, SQL_HANDLE_DBC, rc, 0, 
+    _ruby_ibm_db_check_sql_errors( stmt_res , DB_STMT, stmt_res->hdbc, SQL_HANDLE_DBC, rc, 0,
               stmt_res->ruby_stmt_err_msg, &(stmt_res->ruby_stmt_err_msg_len),1, 1, 0 );
 
     return SQL_ERROR;
@@ -8728,7 +8728,7 @@ static RETCODE _ruby_ibm_db_get_data2(stmt_handle *stmt_res, SQLUSMALLINT col_nu
   getSubString_args->buffer       =  buff;
   getSubString_args->buff_length  =  buff_length;
   getSubString_args->out_length   =  out_length;
-  
+
   rc = _ruby_ibm_db_SQLGetSubString_helper( getSubString_args );
 
   if ( rc == SQL_ERROR ) {
@@ -8771,7 +8771,7 @@ int isNullLOB(VALUE *return_value,int i,stmt_handle *stmt_res,int op)
 /*
   static VALUE _ruby_ibm_db_result_helper(ibm_db_result_args *data)
 
-  In this function Qnil, Qfalse and Qtrue all are valid output values. Hence in this case a exception condition will be 
+  In this function Qnil, Qfalse and Qtrue all are valid output values. Hence in this case a exception condition will be
   thrown with a return value of Qnil and also the allocation of memory for error is to be done only when exception is raised
   This is because in the caller function a rb_throw call is made only if return value is Qnil and error == NULL.
   In all other cases the value returned will be either Qfalse (meaning SQL_NO_DATA), VALUE or Qnil (meaning the value is nil)
@@ -8854,14 +8854,14 @@ static VALUE _ruby_ibm_db_result_helper(ibm_db_result_args *data) {
           */
         in_length = in_length * 2;
       }
-	  
+
       if( column_type == SQL_CHAR || column_type == SQL_VARCHAR ) {
           /* Multiply size by 4 to handle different client and server codepages.
            * factor of 4 should suffice as known characters today well fit in 4 bytes.
            */
         in_length = in_length * 4;
       }
-	  
+
       out_ptr = (SQLPOINTER)ALLOC_N(char,in_length);
       memset(out_ptr, '\0', in_length);
 #endif
@@ -8910,7 +8910,7 @@ static VALUE _ruby_ibm_db_result_helper(ibm_db_result_args *data) {
 
       out_ptr = (SQLPOINTER)ALLOC_N(char,in_length);
       memset(out_ptr, '\0', in_length);
-  
+
       if ( out_ptr == NULL ) {
         rb_warn( "Failed to Allocate Memory while trying to retrieve the result" );
         return Qnil;
@@ -8931,7 +8931,7 @@ static VALUE _ruby_ibm_db_result_helper(ibm_db_result_args *data) {
         out_ptr = NULL;
         return return_value;
       }
-      break; 
+      break;
     case SQL_SMALLINT:
     case SQL_INTEGER:
       rc = _ruby_ibm_db_get_data(stmt_res, col_num+1, SQL_C_LONG, &long_val, sizeof(long_val), &out_length);
@@ -9105,23 +9105,23 @@ static VALUE _ruby_ibm_db_result_helper(ibm_db_result_args *data) {
 
 /*
  * IBM_DB.result --  Returns a single column from a row in the result set
- * 
+ *
  * ===Description
  * mixed IBM_DB.result ( resource stmt, mixed column )
- * 
+ *
  * Use IBM_DB.result() to return the value of a specified column in the current row of a result set. You must call IBM_DB.fetch_row() before calling IBM_DB.result() to set the location of the result set pointer.
- * 
+ *
  * ===Parameters
- * 
+ *
  * stmt
- *     A valid stmt resource. 
- * 
+ *     A valid stmt resource.
+ *
  * column
- *     Either an integer mapping to the 0-indexed field in the result set, or a string matching the name of the column. 
- * 
+ *     Either an integer mapping to the 0-indexed field in the result set, or a string matching the name of the column.
+ *
  * ===Return Values
- * 
- * Returns the value of the requested field if the field exists in the result set. Returns NULL if the field does not exist, and issues a warning. 
+ *
+ * Returns the value of the requested field if the field exists in the result set. Returns NULL if the field does not exist, and issues a warning.
  */
 VALUE ibm_db_result(int argc, VALUE *argv, VALUE self)
 {
@@ -9144,7 +9144,7 @@ VALUE ibm_db_result(int argc, VALUE *argv, VALUE self)
     Data_Get_Struct(stmt, stmt_handle, result_args->stmt_res);
 
     #ifdef UNICODE_SUPPORT_VERSION
-      ret_val = rb_thread_blocking_region( (void *)_ruby_ibm_db_result_helper, result_args,
+      ret_val = rb_thread_call_without_gvl( (void *)_ruby_ibm_db_result_helper, result_args,
                           (void *)_ruby_ibm_db_Statement_level_UBF, result_args->stmt_res );
     #else
       ret_val = _ruby_ibm_db_result_helper( result_args );
@@ -9470,7 +9470,7 @@ static VALUE _ruby_ibm_db_bind_fetch_helper(ibm_db_fetch_helper_args *data)
 
           if(tmpStr == NULL ){
            rb_warn( "Failed to Allocate Memory for Decimal Data" );
-           return Qnil; 
+           return Qnil;
           }
 
           strcpy(tmpStr, "BigDecimal.new(\'");
@@ -9561,9 +9561,9 @@ static VALUE _ruby_ibm_db_bind_fetch_helper(ibm_db_fetch_helper_args *data)
           break;
 
         case SQL_BLOB:
-        
+
         /*Check if the data value in the column is null*/
-        
+
           if(isNullLOB(&return_value,i,stmt_res,op))
           {
             break;
@@ -9631,7 +9631,7 @@ static VALUE _ruby_ibm_db_bind_fetch_helper(ibm_db_fetch_helper_args *data)
           break;
 
         case SQL_XML:
-        
+
         /*Check if the data value in the column is null*/
 
           if(isNullLOB(&return_value,i,stmt_res,op))
@@ -9714,7 +9714,7 @@ static VALUE _ruby_ibm_db_bind_fetch_helper(ibm_db_fetch_helper_args *data)
           break;
 
         case SQL_CLOB:
-        
+
         /*Check if the data value in the column is null*/
 
           if(isNullLOB(&return_value,i,stmt_res,op))
@@ -9832,7 +9832,7 @@ static int _ruby_ibm_db_fetch_row_helper( ibm_db_fetch_helper_args *data) {
       }
       return Qnil;
     }
-  } 
+  }
 
   fetch_args = ALLOC( fetch_data_args );
   memset(fetch_args,'\0',sizeof(struct _ibm_db_fetch_data_struct));
@@ -9893,30 +9893,30 @@ static int _ruby_ibm_db_fetch_row_helper( ibm_db_fetch_helper_args *data) {
 
 /*
  * IBM_DB.fetch_row --  Sets the result set pointer to the next row or requested row
- * 
+ *
  * ===Description
  * bool IBM_DB.fetch_row ( resource stmt [, int row_number] )
- * 
+ *
  * Use IBM_DB.fetch_row() to iterate through a result set, or to point to a specific row in a result set
  * if you requested a scrollable cursor.
- * 
+ *
  * To retrieve individual fields from the result set, call the IBM_DB.result() function. Rather than calling
  * IBM_DB.fetch_row() and IBM_DB.result(), most applications will call one of IBM_DB.fetch_assoc(),
  * IBM_DB.fetch_both(), or IBM_DB.fetch_array() to advance the result set pointer and return a complete
  * row as an array.
- * 
+ *
  * ===Parameters
  * stmt
- *     A valid stmt resource. 
- * 
+ *     A valid stmt resource.
+ *
  * row_number
  *     With scrollable cursors, you can request a specific row number in the result set. Row numbering
- *     is 1-indexed. 
- * 
+ *     is 1-indexed.
+ *
  * ===Return Values
- * 
+ *
  * Returns TRUE if the requested row exists in the result set. Returns FALSE if the requested row
- * does not exist in the result set. 
+ * does not exist in the result set.
  */
 VALUE ibm_db_fetch_row(int argc, VALUE *argv, VALUE self)
 {
@@ -9947,7 +9947,7 @@ VALUE ibm_db_fetch_row(int argc, VALUE *argv, VALUE self)
   helper_args->error       =  &error;
 
   #ifdef UNICODE_SUPPORT_VERSION
-    ret_val = rb_thread_blocking_region( (void *)_ruby_ibm_db_fetch_row_helper, helper_args,
+    ret_val = rb_thread_call_without_gvl( (void *)_ruby_ibm_db_fetch_row_helper, helper_args,
                         (void *)_ruby_ibm_db_Statement_level_UBF, stmt_res );
   #else
     ret_val = _ruby_ibm_db_fetch_row_helper( helper_args );
@@ -9982,7 +9982,7 @@ VALUE ibm_db_fetch_row(int argc, VALUE *argv, VALUE self)
  * ===Return Values
  *
  * Returns an array of column names in the result set. Raises exception on Error.
- * 
+ *
  */
 VALUE ibm_db_result_cols(int argc, VALUE *argv, VALUE self) {
   VALUE stmt             =  Qnil;
@@ -10064,23 +10064,23 @@ VALUE ibm_db_result_cols(int argc, VALUE *argv, VALUE self) {
 
 /*
  * IBM_DB.fetch_assoc --  Returns an array, indexed by column name, representing a row in a result set
- * 
+ *
  * ===Description
  * array IBM_DB.fetch_assoc ( resource stmt [, int row_number] )
- * 
+ *
  * Returns an array, indexed by column name, representing a row in a result set.
- * 
+ *
  * ===Parameters
  * stmt
- *     A valid stmt resource containing a result set. 
- * 
+ *     A valid stmt resource containing a result set.
+ *
  * row_number
- * 
+ *
  *     Requests a specific 1-indexed row from the result set. Passing this parameter results in a
- *     Ruby warning if the result set uses a forward-only cursor. 
- * 
+ *     Ruby warning if the result set uses a forward-only cursor.
+ *
  * ===Return Values
- * 
+ *
  * Returns an associative array with column values indexed by the column name representing the next
  * or requested row in the result set. Returns FALSE if there are no rows left in the result set,
  * or if the row requested by row_number does not exist in the result set.
@@ -10115,7 +10115,7 @@ VALUE ibm_db_fetch_assoc(int argc, VALUE *argv, VALUE self) {
   helper_args->funcType   =  FETCH_ASSOC;
 
   #ifdef UNICODE_SUPPORT_VERSION
-    ret_val = rb_thread_blocking_region( (void *)_ruby_ibm_db_bind_fetch_helper, helper_args,
+    ret_val = rb_thread_call_without_gvl( (void *)_ruby_ibm_db_bind_fetch_helper, helper_args,
                         (void *)_ruby_ibm_db_Statement_level_UBF, stmt_res );
   #else
     ret_val = _ruby_ibm_db_bind_fetch_helper( helper_args );
@@ -10137,35 +10137,35 @@ VALUE ibm_db_fetch_assoc(int argc, VALUE *argv, VALUE self) {
 
 /*
  * IBM_DB.fetch_object --  Returns an object with properties representing columns in the fetched row
- * 
+ *
  * ===Description
  * object IBM_DB.fetch_object ( resource stmt [, int row_number] )
- * 
+ *
  * Returns an object in which each property represents a column returned in the row fetched from a result set.
- * 
+ *
  * ===Parameters
- * 
+ *
  * stmt
- *     A valid stmt resource containing a result set. 
- * 
+ *     A valid stmt resource containing a result set.
+ *
  * row_number
  *     Requests a specific 1-indexed row from the result set. Passing this parameter results in a
- *     Ruby warning if the result set uses a forward-only cursor. 
- * 
+ *     Ruby warning if the result set uses a forward-only cursor.
+ *
  * ===Return Values
- * 
+ *
  * Returns an object representing a single row in the result set. The properties of the object map
  * to the names of the columns in the result set.
- * 
+ *
  * The IBM DB2, Cloudscape, and Apache Derby database servers typically fold column names to upper-case,
  * so the object properties will reflect that case.
- * 
+ *
  * If your SELECT statement calls a scalar function to modify the value of a column, the database servers
  * return the column number as the name of the column in the result set. If you prefer a more
  * descriptive column name and object property, you can use the AS clause to assign a name
  * to the column in the result set.
- * 
- * Returns FALSE if no row was retrieved. 
+ *
+ * Returns FALSE if no row was retrieved.
  */
 VALUE ibm_db_fetch_object(int argc, VALUE *argv, VALUE self)
 {
@@ -10202,7 +10202,7 @@ VALUE ibm_db_fetch_object(int argc, VALUE *argv, VALUE self)
   helper_args->funcType   =  FETCH_ASSOC;
 
   #ifdef UNICODE_SUPPORT_VERSION
-    row_res->hash = rb_thread_blocking_region( (void *)_ruby_ibm_db_bind_fetch_helper, helper_args,
+    row_res->hash = rb_thread_call_without_gvl( (void *)_ruby_ibm_db_bind_fetch_helper, helper_args,
                               (void *)_ruby_ibm_db_Statement_level_UBF, stmt_res );
   #else
     row_res->hash = _ruby_ibm_db_bind_fetch_helper( helper_args );
@@ -10232,27 +10232,27 @@ VALUE ibm_db_fetch_object(int argc, VALUE *argv, VALUE self)
 
 /*
  * IBM_DB.fetch_array --  Returns an array, indexed by column position, representing a row in a result set
- * 
+ *
  * ===Description
- * 
+ *
  * array IBM_DB.fetch_array ( resource stmt [, int row_number] )
  *
  * Returns an array, indexed by column position, representing a row in a result set. The columns are 0-indexed.
- * 
+ *
  * ===Parameters
- * 
+ *
  * stmt
- *     A valid stmt resource containing a result set. 
- * 
+ *     A valid stmt resource containing a result set.
+ *
  * row_number
  *     Requests a specific 1-indexed row from the result set. Passing this parameter results in a
- *     Ruby warning if the result set uses a forward-only cursor. 
- * 
+ *     Ruby warning if the result set uses a forward-only cursor.
+ *
  * ===Return Values
- * 
+ *
  * Returns a 0-indexed array with column values indexed by the column position representing the next
  * or requested row in the result set. Returns FALSE if there are no rows left in the result set,
- * or if the row requested by row_number does not exist in the result set. 
+ * or if the row requested by row_number does not exist in the result set.
  */
 VALUE ibm_db_fetch_array(int argc, VALUE *argv, VALUE self)
 {
@@ -10284,7 +10284,7 @@ VALUE ibm_db_fetch_array(int argc, VALUE *argv, VALUE self)
   helper_args->funcType    =  FETCH_INDEX;
 
   #ifdef UNICODE_SUPPORT_VERSION
-    ret_val = rb_thread_blocking_region( (void *)_ruby_ibm_db_bind_fetch_helper, helper_args,
+    ret_val = rb_thread_call_without_gvl( (void *)_ruby_ibm_db_bind_fetch_helper, helper_args,
                         (void *)_ruby_ibm_db_Statement_level_UBF, stmt_res );
   #else
     ret_val = _ruby_ibm_db_bind_fetch_helper( helper_args );
@@ -10307,25 +10307,25 @@ VALUE ibm_db_fetch_array(int argc, VALUE *argv, VALUE self)
 /*
  * IBM_DB.fetch_both --  Returns an array, indexed by both column name and position, representing a row
  * in a result set
- * 
+ *
  * ===Description
  * array IBM_DB.fetch_both ( resource stmt [, int row_number] )
- * 
+ *
  * Returns an array, indexed by both column name and position, representing a row in a result set.
  * Note that the row returned by IBM_DB.fetch_both() requires more memory than the single-indexed
  * arrays returned by IBM_DB.fetch_assoc() or IBM_DB.fetch_array().
- * 
+ *
  * ===Parameters
- * 
+ *
  * stmt
- *     A valid stmt resource containing a result set. 
- * 
+ *     A valid stmt resource containing a result set.
+ *
  * row_number
  *     Requests a specific 1-indexed row from the result set. Passing this parameter results in a
- *     Ruby warning if the result set uses a forward-only cursor. 
- * 
+ *     Ruby warning if the result set uses a forward-only cursor.
+ *
  * ===Return Values
- * 
+ *
  * Returns an associative array with column values indexed by both the column name and 0-indexed column number.
  * The array represents the next or requested row in the result set. Returns FALSE if there are no rows
  * left in the result set, or if the row requested by row_number does not exist in the result set.
@@ -10360,7 +10360,7 @@ VALUE ibm_db_fetch_both(int argc, VALUE *argv, VALUE self)
   helper_args->funcType    =  FETCH_BOTH;
 
   #ifdef UNICODE_SUPPORT_VERSION
-    ret_val = rb_thread_blocking_region( (void *)_ruby_ibm_db_bind_fetch_helper, helper_args,
+    ret_val = rb_thread_call_without_gvl( (void *)_ruby_ibm_db_bind_fetch_helper, helper_args,
                         (void *)_ruby_ibm_db_Statement_level_UBF, stmt_res );
   #else
     ret_val = _ruby_ibm_db_bind_fetch_helper( helper_args );
@@ -10382,25 +10382,25 @@ VALUE ibm_db_fetch_both(int argc, VALUE *argv, VALUE self)
 
 /*
  * IBM_DB.set_option --  Sets the specified option in the resource.
- * 
+ *
  * ===Description
  * bool IBM_DB.set_option ( resource resc, array options, int type )
- * 
+ *
  * Sets options for a connection or statement resource. You cannot set options for result set resources.
- * 
+ *
  * ===Parameters
- * 
+ *
  * resc
  *     A valid connection or statement resource.
- * 
+ *
  * options
  *     The options to be set
  *
  * type
  *     A field that specifies the resource type (1 = Connection, NON-1 = Statement)
- * 
+ *
  * ===Return Values
- * 
+ *
  * Returns TRUE on success or FALSE on failure
  */
 VALUE ibm_db_set_option(int argc, VALUE *argv, VALUE self)
@@ -11015,13 +11015,13 @@ static VALUE ibm_db_server_info_helper( get_info_args *getInfo_args ) {
 
 /*
  * IBM_DB.server_info -- Returns an object with properties that describe the DB2 database server
- * 
+ *
  * ===Description
  * object IBM_DB.server_info ( resource connection )
- * 
+ *
  * This function returns a read-only object with information about the IBM DB2, Cloudscape, or Apache Derby database server.
  * The following table lists the database server properties:
- * 
+ *
  * ===Table 1. Database server properties
  * <b>Property name</b>:: <b>Description (Return type)</b>
  * DBMS_NAME:: The name of the database server to which you are connected. For DB2 servers this is a combination
@@ -11032,17 +11032,17 @@ static VALUE ibm_db_server_info_helper( get_info_args *getInfo_args ) {
  * DB_CODEPAGE:: The code page of the database to which you are connected. (int)
  * DB_NAME:: The name of the database to which you are connected. (string)
  * DFT_ISOLATION:: The default transaction isolation level supported by the server: (string)
- * 
- *                 UR:: Uncommitted read: changes are immediately visible by all concurrent transactions. 
- * 
- *                 CS:: Cursor stability: a row read by one transaction can be altered and committed by a second concurrent transaction. 
- * 
- *                 RS:: Read stability: a transaction can add or remove rows matching a search condition or a pending transaction. 
- * 
- *                 RR:: Repeatable read: data affected by pending transaction is not available to other transactions. 
- * 
- *                 NC:: No commit: any changes are visible at the end of a successful operation. Explicit commits and rollbacks are not allowed. 
- * 
+ *
+ *                 UR:: Uncommitted read: changes are immediately visible by all concurrent transactions.
+ *
+ *                 CS:: Cursor stability: a row read by one transaction can be altered and committed by a second concurrent transaction.
+ *
+ *                 RS:: Read stability: a transaction can add or remove rows matching a search condition or a pending transaction.
+ *
+ *                 RR:: Repeatable read: data affected by pending transaction is not available to other transactions.
+ *
+ *                 NC:: No commit: any changes are visible at the end of a successful operation. Explicit commits and rollbacks are not allowed.
+ *
  * IDENTIFIER_QUOTE_CHAR:: The character used to delimit an identifier. (string)
  * INST_NAME:: The instance on the database server that contains the database. (string)
  * ISOLATION_OPTION:: An array of the isolation options supported by the database server. The isolation options are described
@@ -11065,23 +11065,23 @@ static VALUE ibm_db_server_info_helper( get_info_args *getInfo_args ) {
  * SPECIAL_CHARS:: A string containing all of the characters other than a-Z, 0-9, and underscore that can be used in an
  *                 identifier name. (string)
  * SQL_CONFORMANCE:: The level of conformance to the ANSI/ISO SQL-92 specification offered by the database server: (string)
- * 
- *                   ENTRY:: Entry-level SQL-92 compliance. 
- * 
- *                   FIPS127:: FIPS-127-2 transitional compliance. 
- * 
- *                   FULL:: Full level SQL-92 compliance. 
- * 
- *                   INTERMEDIATE:: Intermediate level SQL-92 compliance. 
- * 
+ *
+ *                   ENTRY:: Entry-level SQL-92 compliance.
+ *
+ *                   FIPS127:: FIPS-127-2 transitional compliance.
+ *
+ *                   FULL:: Full level SQL-92 compliance.
+ *
+ *                   INTERMEDIATE:: Intermediate level SQL-92 compliance.
+ *
  * ===Parameters
- * 
+ *
  * connection
- *     Specifies an active DB2 client connection. 
- * 
+ *     Specifies an active DB2 client connection.
+ *
  * ===Return Values
- * 
- * Returns an object on a successful call. Returns FALSE on failure. 
+ *
+ * Returns an object on a successful call. Returns FALSE on failure.
  */
 VALUE ibm_db_server_info(int argc, VALUE *argv, VALUE self)
 {
@@ -11111,7 +11111,7 @@ VALUE ibm_db_server_info(int argc, VALUE *argv, VALUE self)
     getInfo_args->buff_length  =  0;
 
     #ifdef UNICODE_SUPPORT_VERSION
-      return_value  =  rb_thread_blocking_region( (void *)ibm_db_server_info_helper, getInfo_args,
+      return_value  =  rb_thread_call_without_gvl( (void *)ibm_db_server_info_helper, getInfo_args,
                                  (void *)_ruby_ibm_db_Connection_level_UBF, NULL);
     #else
       return_value = ibm_db_server_info_helper( getInfo_args );
@@ -11127,7 +11127,7 @@ VALUE ibm_db_server_info(int argc, VALUE *argv, VALUE self)
   }
   return Qnil;
 }
-/*  
+/*
    Retrieves the client information by calling the SQLGetInfo_helper function and wraps it up into client_info object
 */
 static VALUE ibm_db_client_info_helper( get_info_args *getInfo_args) {
@@ -11333,12 +11333,12 @@ static VALUE ibm_db_client_info_helper( get_info_args *getInfo_args) {
 
 /*
  * IBM_DB.client_info -- Returns an object with properties that describe the DB2 database client
- * 
+ *
  * ===Description
  * object IBM_DB.client_info ( resource connection )
- * 
+ *
  * This function returns a read-only object with information about the DB2 database client. The following table lists the DB2 client properties:
- * 
+ *
  * ====Table 1. DB2 client properties
  *
  * <b>Property name</b>:: <b>Description (Return type)</b>
@@ -11360,14 +11360,14 @@ static VALUE ibm_db_client_info_helper( get_info_args *getInfo_args) {
  * ODBC_VER:: The version of ODBC that the ODBC driver manager supports. This returns a string "MM.mm.rrrr" where MM is the major version, mm is the minor version, and rrrr is the release. The DB2 client always returns "03.01.0000". (string)
  *
  * ===Parameters
- * 
+ *
  * connection
- * 
- *    Specifies an active DB2 client connection. 
+ *
+ *    Specifies an active DB2 client connection.
  *
  * ===Return Values
- * 
- * Returns an object on a successful call. Returns FALSE on failure. 
+ *
+ * Returns an object on a successful call. Returns FALSE on failure.
  */
 VALUE ibm_db_client_info(int argc, VALUE *argv, VALUE self)
 {
@@ -11398,7 +11398,7 @@ VALUE ibm_db_client_info(int argc, VALUE *argv, VALUE self)
     getInfo_args->buff_length  =  0;
 
     #ifdef UNICODE_SUPPORT_VERSION
-      return_value = rb_thread_blocking_region( (void *)ibm_db_client_info_helper, getInfo_args,
+      return_value = rb_thread_call_without_gvl( (void *)ibm_db_client_info_helper, getInfo_args,
                                (void *)_ruby_ibm_db_Connection_level_UBF, NULL);
     #else
       return_value = ibm_db_client_info_helper( getInfo_args );
@@ -11417,20 +11417,20 @@ VALUE ibm_db_client_info(int argc, VALUE *argv, VALUE self)
 }
 /*  */
 
-/* 
+/*
  * IBM_DB.active --  Checks if the specified connection resource is active
- * 
+ *
  * ===Description
  * object IBM_DB.active(resource connection)
- * 
+ *
  * Returns true if the given connection resource is active
- * 
+ *
  * ===Parameters
  * connection
  *     The connection resource to be validated.
- * 
+ *
  * ===Return Values
- * 
+ *
  * Returns true if the given connection resource is active, otherwise it will return false
  */
 VALUE ibm_db_active(int argc, VALUE *argv, VALUE self)
@@ -11490,7 +11490,7 @@ VALUE ibm_db_active(int argc, VALUE *argv, VALUE self)
  * ===Parameters
  *
  * resc
- *     A valid connection or statement resource containing a result set. 
+ *     A valid connection or statement resource containing a result set.
  *
  * options
  *     The options to be retrieved
@@ -11498,7 +11498,7 @@ VALUE ibm_db_active(int argc, VALUE *argv, VALUE self)
  * type
  *     A field that specifies the resource type
  *
- *     IBM_DB::DB_STMT for Statement and IBM_DB::DB_CONN for Connection or 
+ *     IBM_DB::DB_STMT for Statement and IBM_DB::DB_CONN for Connection or
  *     1 = Connection, non - 1 = Statement
  *
  * ===Return Values
@@ -11643,7 +11643,7 @@ VALUE ibm_db_get_option(int argc, VALUE *argv, VALUE self)
  * ===Description
  * string IBM_DB.get_last_serial_value ( resource stmt )
  *
- * Returns a string, that is the last inserted value for a serial column for IDS. 
+ * Returns a string, that is the last inserted value for a serial column for IDS.
  * The last inserted value could be auto-generated or entered explicitly by the user
  * This function is valid for IDS (Informix Dynamic Server only)
  *
@@ -11654,7 +11654,7 @@ VALUE ibm_db_get_option(int argc, VALUE *argv, VALUE self)
  *
  * ===Return Values
  *
- * Returns a string representation of last inserted serial value on a successful call. 
+ * Returns a string representation of last inserted serial value on a successful call.
  * Returns FALSE in case of failure.
  */
 VALUE ibm_db_get_last_serial_value(int argc, VALUE *argv, VALUE self)
@@ -11669,7 +11669,7 @@ VALUE ibm_db_get_last_serial_value(int argc, VALUE *argv, VALUE self)
   int rc = 0;
 
   get_handle_attr_args *get_handleAttr_args = NULL;
-  
+
   rb_scan_args(argc, argv, "1", &stmt);
 
   if (!NIL_P(stmt)) {
