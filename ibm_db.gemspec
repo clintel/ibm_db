@@ -47,9 +47,10 @@ Gem::Specification.new do |spec|
       puts ".. ibm_db driver was found:   #{drv_lib.realpath}"
     else
       puts ".. ibm_db driver binary was not found. The driver native extension to be built during install."
-      spec.extensions << 'ext/extconf.rb'
     end
   end
+
+  spec.extensions << 'ext/extconf.rb'
 
   spec.test_file = 'test/ibm_db_test.rb'
   spec.has_rdoc = true
