@@ -123,15 +123,19 @@ def untarCLIPackage(archive,destination)
       end
       file ||= File.join destination, entry.full_name
       if entry.directory?
+      	FileUtils.rm_rf file if File.directory? file
         File.delete file if File.file? file
         FileUtils.mkdir_p file, :mode => entry.header.mode, :verbose => false
       elsif entry.file?
         FileUtils.rm_rf file if File.directory? file
+        File.delete file if File.file? file
         File.open file, "wb" do |f|
           f.print entry.read
         end
         FileUtils.chmod entry.header.mode, file, :verbose => false
       elsif entry.header.typeflag == '2' #Symlink!
+        FileUtils.rm_rf file if File.directory? file
+        File.delete file if File.file? file
         File.symlink entry.header.linkname, file
       end
     end
@@ -229,7 +233,7 @@ end
 
 alias :libpathflag0 :libpathflag
 def libpathflag(libpath)
-  ldflags =  case Config::CONFIG["arch"]
+  ldflags =  case (Config::CONFIG["arch"] rescue RbConfig::CONFIG["arch"])
     when /solaris2/
       libpath[0..-2].map {|path| " -R#{path}"}.join
     when /linux/
